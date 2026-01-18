@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		930DBCD22F1D8B8F00555EA7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 930DBCB42F1D8B8D00555EA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 930DBCBB2F1D8B8D00555EA7;
+			remoteInfo = MyMeditationPal;
+		};
+		930DBCDC2F1D8B8F00555EA7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 930DBCB42F1D8B8D00555EA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 930DBCBB2F1D8B8D00555EA7;
+			remoteInfo = MyMeditationPal;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMeditationPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyMeditationPalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyMeditationPalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		930DBCBE2F1D8B8D00555EA7 /* MyMeditationPal */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyMeditationPal;
+			sourceTree = "<group>";
+		};
+		930DBCD42F1D8B8F00555EA7 /* MyMeditationPalTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyMeditationPalTests;
+			sourceTree = "<group>";
+		};
+		930DBCDE2F1D8B8F00555EA7 /* MyMeditationPalUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyMeditationPalUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		930DBCB92F1D8B8D00555EA7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCCE2F1D8B8F00555EA7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCD82F1D8B8F00555EA7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		930DBCB32F1D8B8D00555EA7 = {
+			isa = PBXGroup;
+			children = (
+				930DBCBE2F1D8B8D00555EA7 /* MyMeditationPal */,
+				930DBCD42F1D8B8F00555EA7 /* MyMeditationPalTests */,
+				930DBCDE2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
+				930DBCBD2F1D8B8D00555EA7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		930DBCBD2F1D8B8D00555EA7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */,
+				930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */,
+				930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPal" */;
+			buildPhases = (
+				930DBCB82F1D8B8D00555EA7 /* Sources */,
+				930DBCB92F1D8B8D00555EA7 /* Frameworks */,
+				930DBCBA2F1D8B8D00555EA7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				930DBCBE2F1D8B8D00555EA7 /* MyMeditationPal */,
+			);
+			name = MyMeditationPal;
+			packageProductDependencies = (
+			);
+			productName = MyMeditationPal;
+			productReference = 930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */;
+			productType = "com.apple.product-type.application";
+		};
+		930DBCD02F1D8B8F00555EA7 /* MyMeditationPalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalTests" */;
+			buildPhases = (
+				930DBCCD2F1D8B8F00555EA7 /* Sources */,
+				930DBCCE2F1D8B8F00555EA7 /* Frameworks */,
+				930DBCCF2F1D8B8F00555EA7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				930DBCD32F1D8B8F00555EA7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				930DBCD42F1D8B8F00555EA7 /* MyMeditationPalTests */,
+			);
+			name = MyMeditationPalTests;
+			packageProductDependencies = (
+			);
+			productName = MyMeditationPalTests;
+			productReference = 930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		930DBCDA2F1D8B8F00555EA7 /* MyMeditationPalUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalUITests" */;
+			buildPhases = (
+				930DBCD72F1D8B8F00555EA7 /* Sources */,
+				930DBCD82F1D8B8F00555EA7 /* Frameworks */,
+				930DBCD92F1D8B8F00555EA7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				930DBCDD2F1D8B8F00555EA7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				930DBCDE2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
+			);
+			name = MyMeditationPalUITests;
+			packageProductDependencies = (
+			);
+			productName = MyMeditationPalUITests;
+			productReference = 930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		930DBCB42F1D8B8D00555EA7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					930DBCBB2F1D8B8D00555EA7 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					930DBCD02F1D8B8F00555EA7 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 930DBCBB2F1D8B8D00555EA7;
+					};
+					930DBCDA2F1D8B8F00555EA7 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 930DBCBB2F1D8B8D00555EA7;
+					};
+				};
+			};
+			buildConfigurationList = 930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "MyMeditationPal" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 930DBCB32F1D8B8D00555EA7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 930DBCBD2F1D8B8D00555EA7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */,
+				930DBCD02F1D8B8F00555EA7 /* MyMeditationPalTests */,
+				930DBCDA2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		930DBCBA2F1D8B8D00555EA7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCCF2F1D8B8F00555EA7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCD92F1D8B8F00555EA7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		930DBCB82F1D8B8D00555EA7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCCD2F1D8B8F00555EA7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		930DBCD72F1D8B8F00555EA7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		930DBCD32F1D8B8F00555EA7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */;
+			targetProxy = 930DBCD22F1D8B8F00555EA7 /* PBXContainerItemProxy */;
+		};
+		930DBCDD2F1D8B8F00555EA7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */;
+			targetProxy = 930DBCDC2F1D8B8F00555EA7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		930DBCE32F1D8B8F00555EA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		930DBCE42F1D8B8F00555EA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		930DBCE62F1D8B8F00555EA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyMeditationPal/Preview Content\"";
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPal";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		930DBCE72F1D8B8F00555EA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyMeditationPal/Preview Content\"";
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPal";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		930DBCE92F1D8B8F00555EA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPalTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyMeditationPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyMeditationPal";
+			};
+			name = Debug;
+		};
+		930DBCEA2F1D8B8F00555EA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPalTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyMeditationPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyMeditationPal";
+			};
+			name = Release;
+		};
+		930DBCEC2F1D8B8F00555EA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPalUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyMeditationPal;
+			};
+			name = Debug;
+		};
+		930DBCED2F1D8B8F00555EA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T7J4DHX4TU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPalUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyMeditationPal;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "MyMeditationPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				930DBCE32F1D8B8F00555EA7 /* Debug */,
+				930DBCE42F1D8B8F00555EA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				930DBCE62F1D8B8F00555EA7 /* Debug */,
+				930DBCE72F1D8B8F00555EA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				930DBCE92F1D8B8F00555EA7 /* Debug */,
+				930DBCEA2F1D8B8F00555EA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				930DBCEC2F1D8B8F00555EA7 /* Debug */,
+				930DBCED2F1D8B8F00555EA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 930DBCB42F1D8B8D00555EA7 /* Project object */;
+}
