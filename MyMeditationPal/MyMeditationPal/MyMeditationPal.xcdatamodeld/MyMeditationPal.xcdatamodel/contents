@@ -12,6 +12,12 @@
         <attribute name="affirmationItems" optional="YES" attributeType="String"/>
         <attribute name="greatDayCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="greatDayItems" optional="YES" attributeType="String"/>
+        <attribute name="highlightCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="highlightItems" optional="YES" attributeType="String"/>
+        <attribute name="learningCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="learningItems" optional="YES" attributeType="String"/>
+        <attribute name="excitementCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="excitementItems" optional="YES" attributeType="String"/>
     </entity>
     <elements>
         <element name="DailyCompletion" positionX="-63" positionY="-18" width="128" height="89"/>

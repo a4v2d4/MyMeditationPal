@@ -76,6 +76,9 @@ struct CalendarHistoryView: View {
                                         gratitudeCompleted: isGratitudeCompleted(date: date),
                                         affirmationCompleted: isAffirmationCompleted(date: date),
                                         greatDayCompleted: isGreatDayCompleted(date: date),
+                                        highlightCompleted: isHighlightCompleted(date: date),
+                                        learningCompleted: isLearningCompleted(date: date),
+                                        excitementCompleted: isExcitementCompleted(date: date),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -101,8 +104,13 @@ struct CalendarHistoryView: View {
                             LegendItem(color: Color(red: 0.85, green: 0.65, blue: 0.75), text: "Gratitude")
                             LegendItem(color: Color(red: 0.3, green: 0.7, blue: 0.6), text: "Affirmation")
                         }
-                        HStack {
+                        HStack(spacing: 16) {
                             LegendItem(color: Color(red: 0.95, green: 0.75, blue: 0.3), text: "Great Day")
+                            LegendItem(color: Color(red: 1.0, green: 0.6, blue: 0.4), text: "Highlights")
+                        }
+                        HStack(spacing: 16) {
+                            LegendItem(color: Color(red: 0.5, green: 0.4, blue: 0.7), text: "Learning")
+                            LegendItem(color: Color(red: 0.4, green: 0.75, blue: 0.95), text: "Excitement")
                         }
                     }
                     .padding(.top, Theme.spacing)
@@ -219,6 +227,39 @@ struct CalendarHistoryView: View {
         }
         return false
     }
+    
+    private func isHighlightCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "highlightCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
+    
+    private func isLearningCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "learningCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
+    
+    private func isExcitementCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "excitementCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
 }
 
 struct DayCell: View {
@@ -230,6 +271,9 @@ struct DayCell: View {
     let gratitudeCompleted: Bool
     let affirmationCompleted: Bool
     let greatDayCompleted: Bool
+    let highlightCompleted: Bool
+    let learningCompleted: Bool
+    let excitementCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -281,6 +325,20 @@ struct DayCell: View {
                     HStack(spacing: 2) {
                         Circle()
                             .fill(greatDayCompleted ? Color(red: 0.95, green: 0.75, blue: 0.3) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(highlightCompleted ? Color(red: 1.0, green: 0.6, blue: 0.4) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                    }
+                    
+                    HStack(spacing: 2) {
+                        Circle()
+                            .fill(learningCompleted ? Color(red: 0.5, green: 0.4, blue: 0.7) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(excitementCompleted ? Color(red: 0.4, green: 0.75, blue: 0.95) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                 }

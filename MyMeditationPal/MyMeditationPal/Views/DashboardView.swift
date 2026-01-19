@@ -14,6 +14,9 @@ struct DashboardView: View {
     @State private var showingGratitudeJournal = false
     @State private var showingAffirmationJournal = false
     @State private var showingGreatDayJournal = false
+    @State private var showingHighlightsJournal = false
+    @State private var showingLearningsJournal = false
+    @State private var showingExcitementJournal = false
     
     var body: some View {
         NavigationView {
@@ -79,16 +82,33 @@ struct DashboardView: View {
                                 )
                             }
                             
-                            // Great Day streak card (centered)
+                            // More journal streak cards
                             HStack(spacing: Theme.spacing) {
-                                Spacer()
                                 StreakCard(
                                     title: "Great Day",
                                     streak: viewModel.greatDayStreak,
                                     color: Color(red: 0.95, green: 0.75, blue: 0.3)
                                 )
-                                .frame(maxWidth: .infinity)
-                                Spacer()
+                                
+                                StreakCard(
+                                    title: "Highlights",
+                                    streak: viewModel.highlightStreak,
+                                    color: Color(red: 1.0, green: 0.6, blue: 0.4)
+                                )
+                            }
+                            
+                            HStack(spacing: Theme.spacing) {
+                                StreakCard(
+                                    title: "Learning",
+                                    streak: viewModel.learningStreak,
+                                    color: Color(red: 0.5, green: 0.4, blue: 0.7)
+                                )
+                                
+                                StreakCard(
+                                    title: "Excitement",
+                                    streak: viewModel.excitementStreak,
+                                    color: Color(red: 0.4, green: 0.75, blue: 0.95)
+                                )
                             }
                         }
                         .padding(.horizontal, Theme.spacing)
@@ -129,6 +149,27 @@ struct DashboardView: View {
                                 isCompleted: viewModel.todayGreatDayCompleted,
                                 onTap: {
                                     showingGreatDayJournal = true
+                                }
+                            )
+                            
+                            HighlightsCardView(
+                                isCompleted: viewModel.todayHighlightCompleted,
+                                onTap: {
+                                    showingHighlightsJournal = true
+                                }
+                            )
+                            
+                            LearningsCardView(
+                                isCompleted: viewModel.todayLearningCompleted,
+                                onTap: {
+                                    showingLearningsJournal = true
+                                }
+                            )
+                            
+                            TomorrowExcitementCardView(
+                                isCompleted: viewModel.todayExcitementCompleted,
+                                onTap: {
+                                    showingExcitementJournal = true
                                 }
                             )
                             
@@ -178,6 +219,15 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showingGreatDayJournal) {
                 GreatDayView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingHighlightsJournal) {
+                HighlightsView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingLearningsJournal) {
+                LearningsView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingExcitementJournal) {
+                TomorrowExcitementView(viewModel: viewModel)
             }
             .onAppear {
                 viewModel.loadTodayStatus()
