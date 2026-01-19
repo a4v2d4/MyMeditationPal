@@ -16,6 +16,7 @@ struct VideoPlayerView: View {
     @State private var player: AVPlayer?
     @State private var timeObserver: Any?
     @State private var hasReachedEnd = false
+    @State private var playCount = 0
     
     var body: some View {
         ZStack {
@@ -82,12 +83,22 @@ struct VideoPlayerView: View {
     }
     
     private func mediaDidFinish() {
-        hasReachedEnd = true
-        viewModel.markCompleted(exerciseType: exerciseType)
+        playCount += 1
         
-        // Delay dismiss slightly for better UX
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            dismiss()
+        // Check if we need to loop (for 10-minute coherent breathing)
+        if exerciseType.shouldLoop && playCount == 1 {
+            // Loop the video one more time
+            player?.seek(to: .zero)
+            player?.play()
+        } else {
+            // Mark as completed and dismiss
+            hasReachedEnd = true
+            viewModel.markCompleted(exerciseType: exerciseType)
+            
+            // Delay dismiss slightly for better UX
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                dismiss()
+            }
         }
     }
     

@@ -6,6 +6,7 @@
         <attribute name="meditationCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="coherentBreathingCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="bodyScanCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="kegelExerciseCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="gratitudeCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="gratitudeItems" optional="YES" attributeType="String"/>
         <attribute name="affirmationCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>

@@ -71,7 +71,7 @@ struct CalendarHistoryView: View {
                                         date: date,
                                         boxBreathingCompleted: isCompleted(date: date, type: .boxBreathing),
                                         meditationCompleted: isCompleted(date: date, type: .meditation),
-                                        coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing),
+                                        coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing(duration: 5)),
                                         bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
                                         gratitudeCompleted: isGratitudeCompleted(date: date),
                                         affirmationCompleted: isAffirmationCompleted(date: date),
@@ -185,10 +185,12 @@ struct CalendarHistoryView: View {
                     return completion.boxBreathingCompleted
                 case .meditation:
                     return completion.meditationCompleted
-                case .coherentBreathing:
+                case .coherentBreathing(_):
                     return completion.coherentBreathingCompleted
                 case .bodyScan:
                     return completion.bodyScanCompleted
+                case .kegelExercise:
+                    return completion.kegelExerciseCompleted
                 }
             }
         }

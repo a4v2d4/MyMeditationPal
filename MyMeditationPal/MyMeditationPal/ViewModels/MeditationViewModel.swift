@@ -16,6 +16,7 @@ class MeditationViewModel: ObservableObject {
     @Published var todayMeditationCompleted: Bool = false
     @Published var todayCoherentBreathingCompleted: Bool = false
     @Published var todayBodyScanCompleted: Bool = false
+    @Published var todayKegelExerciseCompleted: Bool = false
     @Published var todayGratitudeCompleted: Bool = false
     @Published var todayAffirmationCompleted: Bool = false
     @Published var todayGreatDayCompleted: Bool = false
@@ -26,6 +27,7 @@ class MeditationViewModel: ObservableObject {
     @Published var meditationStreak: Int = 0
     @Published var coherentBreathingStreak: Int = 0
     @Published var bodyScanStreak: Int = 0
+    @Published var kegelExerciseStreak: Int = 0
     @Published var gratitudeStreak: Int = 0
     @Published var affirmationStreak: Int = 0
     @Published var greatDayStreak: Int = 0
@@ -67,6 +69,7 @@ class MeditationViewModel: ObservableObject {
                 todayMeditationCompleted = todayCompletion.meditationCompleted
                 todayCoherentBreathingCompleted = todayCompletion.coherentBreathingCompleted
                 todayBodyScanCompleted = todayCompletion.bodyScanCompleted
+                todayKegelExerciseCompleted = todayCompletion.kegelExerciseCompleted
                 todayGratitudeCompleted = todayCompletion.value(forKey: "gratitudeCompleted") as? Bool ?? false
                 todayAffirmationCompleted = todayCompletion.value(forKey: "affirmationCompleted") as? Bool ?? false
                 todayGreatDayCompleted = todayCompletion.value(forKey: "greatDayCompleted") as? Bool ?? false
@@ -90,7 +93,8 @@ class MeditationViewModel: ObservableObject {
         completion.meditationCompleted = false
         completion.coherentBreathingCompleted = false
         completion.bodyScanCompleted = false
-        completion.setValue(false, forKey: "gratitudeCompleted")
+        completion.kegelExerciseCompleted = false
+        completion.gratitudeCompleted = false
         completion.setValue(nil, forKey: "gratitudeItems")
         completion.setValue(false, forKey: "affirmationCompleted")
         completion.setValue(nil, forKey: "affirmationItems")
@@ -146,12 +150,15 @@ class MeditationViewModel: ObservableObject {
             case .meditation:
                 todayCompletion.meditationCompleted = true
                 todayMeditationCompleted = true
-            case .coherentBreathing:
+            case .coherentBreathing(_):
                 todayCompletion.coherentBreathingCompleted = true
                 todayCoherentBreathingCompleted = true
             case .bodyScan:
                 todayCompletion.bodyScanCompleted = true
                 todayBodyScanCompleted = true
+            case .kegelExercise:
+                todayCompletion.kegelExerciseCompleted = true
+                todayKegelExerciseCompleted = true
             }
             
             try context.save()
@@ -168,6 +175,7 @@ class MeditationViewModel: ObservableObject {
         meditationStreak = calculateStreak(for: \.meditationCompleted)
         coherentBreathingStreak = calculateStreak(for: \.coherentBreathingCompleted)
         bodyScanStreak = calculateStreak(for: \.bodyScanCompleted)
+        kegelExerciseStreak = calculateKegelExerciseStreak()
         gratitudeStreak = calculateGratitudeStreak()
         affirmationStreak = calculateAffirmationStreak()
         greatDayStreak = calculateGreatDayStreak()
@@ -209,6 +217,10 @@ class MeditationViewModel: ObservableObject {
             print("Error calculating streak: \(error)")
             return 0
         }
+    }
+    
+    private func calculateKegelExerciseStreak() -> Int {
+        calculateStreak(for: \.kegelExerciseCompleted)
     }
     
     private func calculateGratitudeStreak() -> Int {
@@ -902,7 +914,8 @@ class MeditationViewModel: ObservableObject {
         completion.meditationCompleted = false
         completion.coherentBreathingCompleted = false
         completion.bodyScanCompleted = false
-        completion.setValue(false, forKey: "gratitudeCompleted")
+        completion.kegelExerciseCompleted = false
+        completion.gratitudeCompleted = false
         completion.setValue(nil, forKey: "gratitudeItems")
         completion.setValue(false, forKey: "affirmationCompleted")
         completion.setValue(nil, forKey: "affirmationItems")
