@@ -20,7 +20,19 @@ struct ExerciseCardView: View {
             VStack(alignment: .leading, spacing: 0) {
                 // Thumbnail
                 ZStack {
-                    if let thumbnail = thumbnail {
+                    if exerciseType.isAudioOnly {
+                        // Audio-only exercise thumbnail
+                        LinearGradient(
+                            gradient: Gradient(colors: [Theme.primaryOrange, Theme.primaryOrange.opacity(0.7)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .frame(height: 180)
+                        
+                        Image(systemName: "mic.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white.opacity(0.9))
+                    } else if let thumbnail = thumbnail {
                         Image(uiImage: thumbnail)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -91,7 +103,12 @@ struct ExerciseCardView: View {
     }
     
     private func generateThumbnail() {
-        guard let videoURL = Bundle.main.url(forResource: exerciseType.videoFileName, withExtension: "mp4") else {
+        // Skip thumbnail generation for audio-only exercises
+        guard !exerciseType.isAudioOnly else {
+            return
+        }
+        
+        guard let videoURL = Bundle.main.url(forResource: exerciseType.mediaFileName, withExtension: exerciseType.mediaExtension) else {
             return
         }
         

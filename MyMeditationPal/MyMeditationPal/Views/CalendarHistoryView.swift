@@ -69,8 +69,10 @@ struct CalendarHistoryView: View {
                                 if let date = date {
                                     DayCell(
                                         date: date,
+                                        boxBreathingCompleted: isCompleted(date: date, type: .boxBreathing),
                                         meditationCompleted: isCompleted(date: date, type: .meditation),
-                                        breathingCompleted: isCompleted(date: date, type: .breathing),
+                                        coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing),
+                                        bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -83,9 +85,15 @@ struct CalendarHistoryView: View {
                     }
                     
                     // Legend
-                    HStack(spacing: Theme.largePadding) {
-                        LegendItem(color: Theme.primaryOrange, text: "Meditation")
-                        LegendItem(color: Theme.deepBlue, text: "Breathing")
+                    VStack(spacing: 8) {
+                        HStack(spacing: 16) {
+                            LegendItem(color: Theme.deepBlue, text: "Box Breath")
+                            LegendItem(color: Theme.primaryOrange, text: "Meditation")
+                        }
+                        HStack(spacing: 16) {
+                            LegendItem(color: Color(red: 0.4, green: 0.6, blue: 0.8), text: "Coherent")
+                            LegendItem(color: Color(red: 0.6, green: 0.4, blue: 0.8), text: "Body Scan")
+                        }
                     }
                     .padding(.top, Theme.spacing)
                     
@@ -155,10 +163,14 @@ struct CalendarHistoryView: View {
             if let completionDate = completion.date,
                calendar.isDate(completionDate, inSameDayAs: date) {
                 switch type {
+                case .boxBreathing:
+                    return completion.boxBreathingCompleted
                 case .meditation:
                     return completion.meditationCompleted
-                case .breathing:
-                    return completion.breathingCompleted
+                case .coherentBreathing:
+                    return completion.coherentBreathingCompleted
+                case .bodyScan:
+                    return completion.bodyScanCompleted
                 }
             }
         }
@@ -168,8 +180,10 @@ struct CalendarHistoryView: View {
 
 struct DayCell: View {
     let date: Date
+    let boxBreathingCompleted: Bool
     let meditationCompleted: Bool
-    let breathingCompleted: Bool
+    let coherentBreathingCompleted: Bool
+    let bodyScanCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -181,20 +195,32 @@ struct DayCell: View {
     }
     
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
             Text("\(dayNumber)")
                 .font(.system(size: 16, weight: isToday ? .bold : .medium))
                 .foregroundColor(isFuture ? Theme.textSecondary.opacity(0.4) : Theme.textPrimary)
             
             if !isFuture {
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(meditationCompleted ? Theme.primaryOrange : Theme.mediumGray.opacity(0.5))
-                        .frame(width: 8, height: 8)
+                VStack(spacing: 2) {
+                    HStack(spacing: 2) {
+                        Circle()
+                            .fill(boxBreathingCompleted ? Theme.deepBlue : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(meditationCompleted ? Theme.primaryOrange : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                    }
                     
-                    Circle()
-                        .fill(breathingCompleted ? Theme.deepBlue : Theme.mediumGray.opacity(0.5))
-                        .frame(width: 8, height: 8)
+                    HStack(spacing: 2) {
+                        Circle()
+                            .fill(coherentBreathingCompleted ? Color(red: 0.4, green: 0.6, blue: 0.8) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(bodyScanCompleted ? Color(red: 0.6, green: 0.4, blue: 0.8) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                    }
                 }
             }
         }

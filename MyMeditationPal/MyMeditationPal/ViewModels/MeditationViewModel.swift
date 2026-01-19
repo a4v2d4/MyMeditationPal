@@ -12,10 +12,14 @@ import SwiftUI
 class MeditationViewModel: ObservableObject {
     let persistenceController: PersistenceController
     
+    @Published var todayBoxBreathingCompleted: Bool = false
     @Published var todayMeditationCompleted: Bool = false
-    @Published var todayBreathingCompleted: Bool = false
+    @Published var todayCoherentBreathingCompleted: Bool = false
+    @Published var todayBodyScanCompleted: Bool = false
+    @Published var boxBreathingStreak: Int = 0
     @Published var meditationStreak: Int = 0
-    @Published var breathingStreak: Int = 0
+    @Published var coherentBreathingStreak: Int = 0
+    @Published var bodyScanStreak: Int = 0
     
     init(persistenceController: PersistenceController = .shared) {
         self.persistenceController = persistenceController
@@ -47,8 +51,10 @@ class MeditationViewModel: ObservableObject {
         do {
             let results = try context.fetch(fetchRequest)
             if let todayCompletion = results.first {
+                todayBoxBreathingCompleted = todayCompletion.boxBreathingCompleted
                 todayMeditationCompleted = todayCompletion.meditationCompleted
-                todayBreathingCompleted = todayCompletion.breathingCompleted
+                todayCoherentBreathingCompleted = todayCompletion.coherentBreathingCompleted
+                todayBodyScanCompleted = todayCompletion.bodyScanCompleted
             } else {
                 // Create today's entry
                 createTodayEntry()
@@ -62,8 +68,10 @@ class MeditationViewModel: ObservableObject {
         let context = persistenceController.container.viewContext
         let completion = DailyCompletion(context: context)
         completion.date = startOfDay()
+        completion.boxBreathingCompleted = false
         completion.meditationCompleted = false
-        completion.breathingCompleted = false
+        completion.coherentBreathingCompleted = false
+        completion.bodyScanCompleted = false
         
         do {
             try context.save()
@@ -88,18 +96,26 @@ class MeditationViewModel: ObservableObject {
             let todayCompletion = results.first ?? {
                 let completion = DailyCompletion(context: context)
                 completion.date = today
+                completion.boxBreathingCompleted = false
                 completion.meditationCompleted = false
-                completion.breathingCompleted = false
+                completion.coherentBreathingCompleted = false
+                completion.bodyScanCompleted = false
                 return completion
             }()
             
             switch exerciseType {
+            case .boxBreathing:
+                todayCompletion.boxBreathingCompleted = true
+                todayBoxBreathingCompleted = true
             case .meditation:
                 todayCompletion.meditationCompleted = true
                 todayMeditationCompleted = true
-            case .breathing:
-                todayCompletion.breathingCompleted = true
-                todayBreathingCompleted = true
+            case .coherentBreathing:
+                todayCompletion.coherentBreathingCompleted = true
+                todayCoherentBreathingCompleted = true
+            case .bodyScan:
+                todayCompletion.bodyScanCompleted = true
+                todayBodyScanCompleted = true
             }
             
             try context.save()
@@ -112,8 +128,10 @@ class MeditationViewModel: ObservableObject {
     // MARK: - Calculate Streaks
     
     func calculateStreaks() {
+        boxBreathingStreak = calculateStreak(for: \.boxBreathingCompleted)
         meditationStreak = calculateStreak(for: \.meditationCompleted)
-        breathingStreak = calculateStreak(for: \.breathingCompleted)
+        coherentBreathingStreak = calculateStreak(for: \.coherentBreathingCompleted)
+        bodyScanStreak = calculateStreak(for: \.bodyScanCompleted)
     }
     
     private func calculateStreak(for keyPath: KeyPath<DailyCompletion, Bool>) -> Int {

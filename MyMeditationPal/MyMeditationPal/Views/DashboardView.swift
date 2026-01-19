@@ -32,23 +32,47 @@ struct DashboardView: View {
                         .padding(.top, Theme.largePadding)
                         
                         // Streak Cards
-                        HStack(spacing: Theme.spacing) {
-                            StreakCard(
-                                title: "Meditation",
-                                streak: viewModel.meditationStreak,
-                                color: Theme.primaryOrange
-                            )
+                        VStack(spacing: Theme.spacing) {
+                            HStack(spacing: Theme.spacing) {
+                                StreakCard(
+                                    title: "Box Breath",
+                                    streak: viewModel.boxBreathingStreak,
+                                    color: Theme.deepBlue
+                                )
+                                
+                                StreakCard(
+                                    title: "Meditation",
+                                    streak: viewModel.meditationStreak,
+                                    color: Theme.primaryOrange
+                                )
+                            }
                             
-                            StreakCard(
-                                title: "Breathing",
-                                streak: viewModel.breathingStreak,
-                                color: Theme.deepBlue
-                            )
+                            HStack(spacing: Theme.spacing) {
+                                StreakCard(
+                                    title: "Coherent",
+                                    streak: viewModel.coherentBreathingStreak,
+                                    color: Color(red: 0.4, green: 0.6, blue: 0.8)
+                                )
+                                
+                                StreakCard(
+                                    title: "Body Scan",
+                                    streak: viewModel.bodyScanStreak,
+                                    color: Color(red: 0.6, green: 0.4, blue: 0.8)
+                                )
+                            }
                         }
                         .padding(.horizontal, Theme.spacing)
                         
                         // Exercise Cards
                         VStack(spacing: Theme.spacing) {
+                            ExerciseCardView(
+                                exerciseType: .boxBreathing,
+                                isCompleted: viewModel.todayBoxBreathingCompleted,
+                                onTap: {
+                                    showingVideoPlayer = .boxBreathing
+                                }
+                            )
+                            
                             ExerciseCardView(
                                 exerciseType: .meditation,
                                 isCompleted: viewModel.todayMeditationCompleted,
@@ -58,10 +82,18 @@ struct DashboardView: View {
                             )
                             
                             ExerciseCardView(
-                                exerciseType: .breathing,
-                                isCompleted: viewModel.todayBreathingCompleted,
+                                exerciseType: .coherentBreathing,
+                                isCompleted: viewModel.todayCoherentBreathingCompleted,
                                 onTap: {
-                                    showingVideoPlayer = .breathing
+                                    showingVideoPlayer = .coherentBreathing
+                                }
+                            )
+                            
+                            ExerciseCardView(
+                                exerciseType: .bodyScan,
+                                isCompleted: viewModel.todayBodyScanCompleted,
+                                onTap: {
+                                    showingVideoPlayer = .bodyScan
                                 }
                             )
                         }

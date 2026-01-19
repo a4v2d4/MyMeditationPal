@@ -22,11 +22,32 @@ struct VideoPlayerView: View {
             Color.black.ignoresSafeArea()
             
             if let player = player {
-                VideoPlayer(player: player)
-                    .ignoresSafeArea()
+                if exerciseType.isAudioOnly {
+                    // Audio-only player with mic icon
+                    VStack(spacing: 40) {
+                        Image(systemName: "mic.fill")
+                            .font(.system(size: 120))
+                            .foregroundColor(.white.opacity(0.9))
+                        
+                        Text(exerciseType.title)
+                            .font(.system(size: 28, weight: .semibold))
+                            .foregroundColor(.white)
+                        
+                        Text(exerciseType.duration)
+                            .font(.system(size: 18))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                     .onDisappear {
                         cleanupPlayer()
                     }
+                } else {
+                    // Video player
+                    VideoPlayer(player: player)
+                        .ignoresSafeArea()
+                        .onDisappear {
+                            cleanupPlayer()
+                        }
+                }
             } else {
                 ProgressView()
                     .scaleEffect(1.5)
@@ -39,28 +60,28 @@ struct VideoPlayerView: View {
     }
     
     private func setupPlayer() {
-        guard let videoURL = Bundle.main.url(forResource: exerciseType.videoFileName, withExtension: "mp4") else {
-            print("Video file not found: \(exerciseType.videoFileName)")
+        guard let mediaURL = Bundle.main.url(forResource: exerciseType.mediaFileName, withExtension: exerciseType.mediaExtension) else {
+            print("Media file not found: \(exerciseType.mediaFileName).\(exerciseType.mediaExtension)")
             return
         }
         
-        let newPlayer = AVPlayer(url: videoURL)
+        let newPlayer = AVPlayer(url: mediaURL)
         self.player = newPlayer
         
-        // Observe when video ends
+        // Observe when media ends
         NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime,
             object: newPlayer.currentItem,
             queue: .main
         ) { _ in
-            videoDidFinish()
+            mediaDidFinish()
         }
         
         // Start playing
         newPlayer.play()
     }
     
-    private func videoDidFinish() {
+    private func mediaDidFinish() {
         hasReachedEnd = true
         viewModel.markCompleted(exerciseType: exerciseType)
         

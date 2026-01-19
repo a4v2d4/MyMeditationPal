@@ -21,7 +21,7 @@ struct PersistenceController {
             let completion = DailyCompletion(context: viewContext)
             completion.date = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -dayOffset, to: Date())!)
             completion.meditationCompleted = dayOffset % 2 == 0
-            completion.breathingCompleted = dayOffset % 3 == 0
+            completion.coherentBreathingCompleted = dayOffset % 3 == 0
         }
         
         do {
