@@ -73,6 +73,7 @@ struct CalendarHistoryView: View {
                                         meditationCompleted: isCompleted(date: date, type: .meditation),
                                         coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing),
                                         bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
+                                        gratitudeCompleted: isGratitudeCompleted(date: date),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -93,6 +94,9 @@ struct CalendarHistoryView: View {
                         HStack(spacing: 16) {
                             LegendItem(color: Color(red: 0.4, green: 0.6, blue: 0.8), text: "Coherent")
                             LegendItem(color: Color(red: 0.6, green: 0.4, blue: 0.8), text: "Body Scan")
+                        }
+                        HStack {
+                            LegendItem(color: Color(red: 0.85, green: 0.65, blue: 0.75), text: "Gratitude")
                         }
                     }
                     .padding(.top, Theme.spacing)
@@ -176,6 +180,17 @@ struct CalendarHistoryView: View {
         }
         return false
     }
+    
+    private func isGratitudeCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "gratitudeCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
 }
 
 struct DayCell: View {
@@ -184,6 +199,7 @@ struct DayCell: View {
     let meditationCompleted: Bool
     let coherentBreathingCompleted: Bool
     let bodyScanCompleted: Bool
+    let gratitudeCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -219,6 +235,12 @@ struct DayCell: View {
                         
                         Circle()
                             .fill(bodyScanCompleted ? Color(red: 0.6, green: 0.4, blue: 0.8) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                    }
+                    
+                    HStack(spacing: 2) {
+                        Circle()
+                            .fill(gratitudeCompleted ? Color(red: 0.85, green: 0.65, blue: 0.75) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                 }

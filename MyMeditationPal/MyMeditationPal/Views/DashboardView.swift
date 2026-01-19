@@ -11,6 +11,7 @@ struct DashboardView: View {
     @StateObject private var viewModel = MeditationViewModel()
     @State private var showingVideoPlayer: ExerciseType?
     @State private var showingCalendar = false
+    @State private var showingGratitudeJournal = false
     
     var body: some View {
         NavigationView {
@@ -60,6 +61,18 @@ struct DashboardView: View {
                                     color: Color(red: 0.6, green: 0.4, blue: 0.8)
                                 )
                             }
+                            
+                            // Gratitude streak card (centered)
+                            HStack(spacing: Theme.spacing) {
+                                Spacer()
+                                StreakCard(
+                                    title: "Gratitude",
+                                    streak: viewModel.gratitudeStreak,
+                                    color: Color(red: 0.85, green: 0.65, blue: 0.75)
+                                )
+                                .frame(maxWidth: .infinity)
+                                Spacer()
+                            }
                         }
                         .padding(.horizontal, Theme.spacing)
                         
@@ -78,6 +91,13 @@ struct DashboardView: View {
                                 isCompleted: viewModel.todayMeditationCompleted,
                                 onTap: {
                                     showingVideoPlayer = .meditation
+                                }
+                            )
+                            
+                            GratitudeCardView(
+                                isCompleted: viewModel.todayGratitudeCompleted,
+                                onTap: {
+                                    showingGratitudeJournal = true
                                 }
                             )
                             
@@ -118,6 +138,9 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showingCalendar) {
                 CalendarHistoryView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingGratitudeJournal) {
+                GratitudeJournalView(viewModel: viewModel)
             }
             .onAppear {
                 viewModel.loadTodayStatus()
