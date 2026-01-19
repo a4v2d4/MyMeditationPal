@@ -74,6 +74,8 @@ struct CalendarHistoryView: View {
                                         coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing),
                                         bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
                                         gratitudeCompleted: isGratitudeCompleted(date: date),
+                                        affirmationCompleted: isAffirmationCompleted(date: date),
+                                        greatDayCompleted: isGreatDayCompleted(date: date),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -95,8 +97,12 @@ struct CalendarHistoryView: View {
                             LegendItem(color: Color(red: 0.4, green: 0.6, blue: 0.8), text: "Coherent")
                             LegendItem(color: Color(red: 0.6, green: 0.4, blue: 0.8), text: "Body Scan")
                         }
-                        HStack {
+                        HStack(spacing: 16) {
                             LegendItem(color: Color(red: 0.85, green: 0.65, blue: 0.75), text: "Gratitude")
+                            LegendItem(color: Color(red: 0.3, green: 0.7, blue: 0.6), text: "Affirmation")
+                        }
+                        HStack {
+                            LegendItem(color: Color(red: 0.95, green: 0.75, blue: 0.3), text: "Great Day")
                         }
                     }
                     .padding(.top, Theme.spacing)
@@ -191,6 +197,28 @@ struct CalendarHistoryView: View {
         }
         return false
     }
+    
+    private func isAffirmationCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "affirmationCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
+    
+    private func isGreatDayCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "greatDayCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
 }
 
 struct DayCell: View {
@@ -200,6 +228,8 @@ struct DayCell: View {
     let coherentBreathingCompleted: Bool
     let bodyScanCompleted: Bool
     let gratitudeCompleted: Bool
+    let affirmationCompleted: Bool
+    let greatDayCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -241,6 +271,16 @@ struct DayCell: View {
                     HStack(spacing: 2) {
                         Circle()
                             .fill(gratitudeCompleted ? Color(red: 0.85, green: 0.65, blue: 0.75) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(affirmationCompleted ? Color(red: 0.3, green: 0.7, blue: 0.6) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                    }
+                    
+                    HStack(spacing: 2) {
+                        Circle()
+                            .fill(greatDayCompleted ? Color(red: 0.95, green: 0.75, blue: 0.3) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                 }

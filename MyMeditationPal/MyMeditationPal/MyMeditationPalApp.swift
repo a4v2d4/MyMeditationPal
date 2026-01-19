@@ -2,7 +2,7 @@
 //  MyMeditationPalApp.swift
 //  MyMeditationPal
 //
-//  Created by Aaron Van Doren on 1/18/26.
+//  Created by   on 1/18/26.
 //
 
 import SwiftUI

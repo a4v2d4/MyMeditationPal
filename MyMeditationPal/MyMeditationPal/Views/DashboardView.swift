@@ -12,6 +12,8 @@ struct DashboardView: View {
     @State private var showingVideoPlayer: ExerciseType?
     @State private var showingCalendar = false
     @State private var showingGratitudeJournal = false
+    @State private var showingAffirmationJournal = false
+    @State private var showingGreatDayJournal = false
     
     var body: some View {
         NavigationView {
@@ -62,13 +64,28 @@ struct DashboardView: View {
                                 )
                             }
                             
-                            // Gratitude streak card (centered)
+                            // Journal streak cards
                             HStack(spacing: Theme.spacing) {
-                                Spacer()
                                 StreakCard(
                                     title: "Gratitude",
                                     streak: viewModel.gratitudeStreak,
                                     color: Color(red: 0.85, green: 0.65, blue: 0.75)
+                                )
+                                
+                                StreakCard(
+                                    title: "Affirmation",
+                                    streak: viewModel.affirmationStreak,
+                                    color: Color(red: 0.3, green: 0.7, blue: 0.6)
+                                )
+                            }
+                            
+                            // Great Day streak card (centered)
+                            HStack(spacing: Theme.spacing) {
+                                Spacer()
+                                StreakCard(
+                                    title: "Great Day",
+                                    streak: viewModel.greatDayStreak,
+                                    color: Color(red: 0.95, green: 0.75, blue: 0.3)
                                 )
                                 .frame(maxWidth: .infinity)
                                 Spacer()
@@ -98,6 +115,20 @@ struct DashboardView: View {
                                 isCompleted: viewModel.todayGratitudeCompleted,
                                 onTap: {
                                     showingGratitudeJournal = true
+                                }
+                            )
+                            
+                            AffirmationCardView(
+                                isCompleted: viewModel.todayAffirmationCompleted,
+                                onTap: {
+                                    showingAffirmationJournal = true
+                                }
+                            )
+                            
+                            GreatDayCardView(
+                                isCompleted: viewModel.todayGreatDayCompleted,
+                                onTap: {
+                                    showingGreatDayJournal = true
                                 }
                             )
                             
@@ -141,6 +172,12 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showingGratitudeJournal) {
                 GratitudeJournalView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingAffirmationJournal) {
+                DailyAffirmationView(viewModel: viewModel)
+            }
+            .sheet(isPresented: $showingGreatDayJournal) {
+                GreatDayView(viewModel: viewModel)
             }
             .onAppear {
                 viewModel.loadTodayStatus()
