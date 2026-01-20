@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMeditationPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyMeditationPalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyMeditationPalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		930DBCBC2F1D8B8D00555EA7 /* DailyAnchor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DailyAnchor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		930DBCD12F1D8B8F00555EA7 /* DailyAnchorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyAnchorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		930DBCDB2F1D8B8F00555EA7 /* DailyAnchorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyAnchorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		930DBCBD2F1D8B8D00555EA7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */,
-				930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */,
-				930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */,
+				930DBCBC2F1D8B8D00555EA7 /* DailyAnchor.app */,
+				930DBCD12F1D8B8F00555EA7 /* DailyAnchorTests.xctest */,
+				930DBCDB2F1D8B8F00555EA7 /* DailyAnchorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */ = {
+		930DBCBB2F1D8B8D00555EA7 /* DailyAnchor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPal" */;
+			buildConfigurationList = 930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchor" */;
 			buildPhases = (
 				930DBCB82F1D8B8D00555EA7 /* Sources */,
 				930DBCB92F1D8B8D00555EA7 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				930DBCBE2F1D8B8D00555EA7 /* MyMeditationPal */,
 			);
-			name = MyMeditationPal;
+			name = DailyAnchor;
 			packageProductDependencies = (
 			);
 			productName = MyMeditationPal;
-			productReference = 930DBCBC2F1D8B8D00555EA7 /* MyMeditationPal.app */;
+			productReference = 930DBCBC2F1D8B8D00555EA7 /* DailyAnchor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		930DBCD02F1D8B8F00555EA7 /* MyMeditationPalTests */ = {
+		930DBCD02F1D8B8F00555EA7 /* DailyAnchorTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalTests" */;
+			buildConfigurationList = 930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchorTests" */;
 			buildPhases = (
 				930DBCCD2F1D8B8F00555EA7 /* Sources */,
 				930DBCCE2F1D8B8F00555EA7 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				930DBCD42F1D8B8F00555EA7 /* MyMeditationPalTests */,
 			);
-			name = MyMeditationPalTests;
+			name = DailyAnchorTests;
 			packageProductDependencies = (
 			);
 			productName = MyMeditationPalTests;
-			productReference = 930DBCD12F1D8B8F00555EA7 /* MyMeditationPalTests.xctest */;
+			productReference = 930DBCD12F1D8B8F00555EA7 /* DailyAnchorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		930DBCDA2F1D8B8F00555EA7 /* MyMeditationPalUITests */ = {
+		930DBCDA2F1D8B8F00555EA7 /* DailyAnchorUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalUITests" */;
+			buildConfigurationList = 930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchorUITests" */;
 			buildPhases = (
 				930DBCD72F1D8B8F00555EA7 /* Sources */,
 				930DBCD82F1D8B8F00555EA7 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				930DBCDE2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
 			);
-			name = MyMeditationPalUITests;
+			name = DailyAnchorUITests;
 			packageProductDependencies = (
 			);
 			productName = MyMeditationPalUITests;
-			productReference = 930DBCDB2F1D8B8F00555EA7 /* MyMeditationPalUITests.xctest */;
+			productReference = 930DBCDB2F1D8B8F00555EA7 /* DailyAnchorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "MyMeditationPal" */;
+			buildConfigurationList = 930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "DailyAnchor" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */,
-				930DBCD02F1D8B8F00555EA7 /* MyMeditationPalTests */,
-				930DBCDA2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
+				930DBCBB2F1D8B8D00555EA7 /* DailyAnchor */,
+				930DBCD02F1D8B8F00555EA7 /* DailyAnchorTests */,
+				930DBCDA2F1D8B8F00555EA7 /* DailyAnchorUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		930DBCD32F1D8B8F00555EA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */;
+			target = 930DBCBB2F1D8B8D00555EA7 /* DailyAnchor */;
 			targetProxy = 930DBCD22F1D8B8F00555EA7 /* PBXContainerItemProxy */;
 		};
 		930DBCDD2F1D8B8F00555EA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 930DBCBB2F1D8B8D00555EA7 /* MyMeditationPal */;
+			target = 930DBCBB2F1D8B8D00555EA7 /* DailyAnchor */;
 			targetProxy = 930DBCDC2F1D8B8F00555EA7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -409,7 +409,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPal";
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.DailyAnchor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -438,7 +438,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.MyMeditationPal";
+				PRODUCT_BUNDLE_IDENTIFIER = "AVID-Software-Solutions.DailyAnchor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -461,7 +461,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyMeditationPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyMeditationPal";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DailyAnchor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DailyAnchor";
 			};
 			name = Debug;
 		};
@@ -480,7 +480,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyMeditationPal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyMeditationPal";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DailyAnchor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DailyAnchor";
 			};
 			name = Release;
 		};
@@ -521,7 +521,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "MyMeditationPal" */ = {
+		930DBCB72F1D8B8D00555EA7 /* Build configuration list for PBXProject "DailyAnchor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				930DBCE32F1D8B8F00555EA7 /* Debug */,
@@ -530,7 +530,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPal" */ = {
+		930DBCE52F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				930DBCE62F1D8B8F00555EA7 /* Debug */,
@@ -539,7 +539,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalTests" */ = {
+		930DBCE82F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchorTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				930DBCE92F1D8B8F00555EA7 /* Debug */,
@@ -548,7 +548,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "MyMeditationPalUITests" */ = {
+		930DBCEB2F1D8B8F00555EA7 /* Build configuration list for PBXNativeTarget "DailyAnchorUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				930DBCEC2F1D8B8F00555EA7 /* Debug */,
