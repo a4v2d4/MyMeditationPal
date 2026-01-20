@@ -62,6 +62,12 @@ struct DashboardView: View {
         .sheet(isPresented: $showingDailyHabits) {
             DailyHabitsView(viewModel: viewModel)
         }
+        .onChange(of: showingDailyHabits) { _, newValue in
+            if !newValue {
+                // Refresh the view when the sheet is dismissed
+                viewModel.loadTodayStatus()
+            }
+        }
         .confirmationDialog("Choose Duration", isPresented: $showingCoherentBreathingDurationPicker, titleVisibility: .visible) {
             Button("5 Minutes") {
                 showingVideoPlayer = .coherentBreathing(duration: 5)
@@ -257,6 +263,7 @@ struct DashboardView: View {
             
             DailyHabitsCardView(
                 isCompleted: viewModel.todayDailyHabitsCompleted,
+                progress: viewModel.getTodayDailyHabitsProgress(),
                 onTap: {
                     showingDailyHabits = true
                 }

@@ -9,7 +9,13 @@ import SwiftUI
 
 struct DailyHabitsCardView: View {
     let isCompleted: Bool
+    let progress: (completed: Int, total: Int)?
     let onTap: () -> Void
+    
+    private var progressText: String? {
+        guard let progress = progress, !isCompleted else { return nil }
+        return "\(progress.completed) / \(progress.total) complete"
+    }
     
     var body: some View {
         Button(action: onTap) {
@@ -31,7 +37,7 @@ struct DailyHabitsCardView: View {
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Theme.textPrimary)
                     
-                    Text("Track your daily routine")
+                    Text(progressText ?? "Track your daily routine")
                         .font(.system(size: 13))
                         .foregroundColor(Theme.textSecondary)
                 }
@@ -62,10 +68,13 @@ struct DailyHabitsCardView: View {
 
 #Preview {
     VStack {
-        DailyHabitsCardView(isCompleted: false, onTap: {})
+        DailyHabitsCardView(isCompleted: false, progress: nil, onTap: {})
             .padding()
         
-        DailyHabitsCardView(isCompleted: true, onTap: {})
+        DailyHabitsCardView(isCompleted: false, progress: (completed: 3, total: 9), onTap: {})
+            .padding()
+        
+        DailyHabitsCardView(isCompleted: true, progress: (completed: 9, total: 9), onTap: {})
             .padding()
     }
     .background(Theme.lightGray)
