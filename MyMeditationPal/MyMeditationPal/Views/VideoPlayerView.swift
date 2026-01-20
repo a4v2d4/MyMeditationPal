@@ -17,6 +17,7 @@ struct VideoPlayerView: View {
     @State private var timeObserver: Any?
     @State private var hasReachedEnd = false
     @State private var playCount = 0
+    @State private var showingExitConfirmation = false
     
     var body: some View {
         ZStack {
@@ -54,9 +55,38 @@ struct VideoPlayerView: View {
                     .scaleEffect(1.5)
                     .tint(.white)
             }
+            
+            // Exit button overlay
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showingExitConfirmation = true
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.white.opacity(0.8))
+                            .background(
+                                Circle()
+                                    .fill(Color.black.opacity(0.3))
+                                    .frame(width: 44, height: 44)
+                            )
+                    }
+                    .padding(16)
+                }
+                Spacer()
+            }
         }
         .onAppear {
             setupPlayer()
+        }
+        .alert("Exit Exercise?", isPresented: $showingExitConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Exit", role: .destructive) {
+                exitWithoutCompleting()
+            }
+        } message: {
+            Text("Exiting now won't count this session as completed. You can always try again later!")
         }
     }
     
@@ -110,5 +140,10 @@ struct VideoPlayerView: View {
         if let observer = timeObserver {
             player?.removeTimeObserver(observer)
         }
+    }
+    
+    private func exitWithoutCompleting() {
+        cleanupPlayer()
+        dismiss()
     }
 }
