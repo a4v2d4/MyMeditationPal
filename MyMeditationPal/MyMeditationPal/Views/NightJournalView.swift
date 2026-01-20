@@ -16,6 +16,7 @@ struct NightJournalView: View {
     @State private var learningItems: [String] = [""]
     @State private var excitementItems: [String] = [""]
     @State private var isSaving = false
+    @State private var showingCongratulations = false
     
     enum NightSection: String, CaseIterable {
         case highlights = "Highlights"
@@ -122,6 +123,16 @@ struct NightJournalView: View {
         }
         .onAppear {
             loadExistingData()
+        }
+        .fullScreenCover(isPresented: $showingCongratulations) {
+            JournalCongratulationsView(
+                journalType: .night,
+                streak: viewModel.nightJournalStreak,
+                onDismiss: {
+                    showingCongratulations = false
+                    dismiss()
+                }
+            )
         }
     }
     
@@ -355,6 +366,8 @@ struct NightJournalView: View {
     private func saveAll() {
         isSaving = true
         
+        let wasAlreadyCompleted = viewModel.todayNightJournalCompleted
+        
         // Save highlights
         let nonEmptyHighlights = highlightItems.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         if !nonEmptyHighlights.isEmpty {
@@ -385,7 +398,13 @@ struct NightJournalView: View {
         // Small delay for visual feedback
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isSaving = false
-            dismiss()
+            
+            // Show congratulations if just completed all sections
+            if allCompleted && !wasAlreadyCompleted {
+                showingCongratulations = true
+            } else {
+                dismiss()
+            }
         }
     }
 }

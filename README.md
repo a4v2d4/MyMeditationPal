@@ -15,6 +15,7 @@ A beautiful, Headspace-inspired iOS meditation and breathing exercise app built 
 - Full-screen video playback with sound
 - Automatic completion tracking - only marks complete when video finishes
 - Smooth transitions and animations
+- **Celebration screen** appears after completion showing your streak progress
 
 ### 📅 Calendar History View
 - Monthly calendar showing your practice history
@@ -28,6 +29,9 @@ A beautiful, Headspace-inspired iOS meditation and breathing exercise app built 
 - Streaks reset at midnight daily
 - Streaks reset to 0 if you miss a day
 - Persistent tracking using Core Data
+- **Congratulatory screens** display after completing exercises, showing current streak
+- Beautiful animations and encouraging messages to celebrate progress
+- Different milestone celebrations (first day, weekly, monthly achievements)
 
 ## Design
 
@@ -57,7 +61,12 @@ MyMeditationPal/
 │   ├── DashboardView.swift         # Main screen
 │   ├── ExerciseCardView.swift      # Reusable exercise card
 │   ├── VideoPlayerView.swift       # Full-screen video player
-│   └── CalendarHistoryView.swift   # History calendar
+│   ├── CalendarHistoryView.swift   # History calendar
+│   ├── CongratulationsView.swift   # Celebration screen for exercises
+│   ├── JournalCongratulationsView.swift # Celebration screen for journals
+│   ├── MorningJournalView.swift    # Morning journaling
+│   ├── NightJournalView.swift      # Night journaling
+│   └── ... (other views)
 ├── Theme.swift                      # App-wide color scheme and styling
 ├── Persistence.swift                # Core Data stack
 ├── MyMeditationPal.xcdatamodeld/   # Core Data model
@@ -76,8 +85,9 @@ MyMeditationPal/
 1. **Daily Reset**: App checks if checkboxes should reset at midnight
 2. **Video Playback**: Tapping a card launches full-screen video player
 3. **Completion Detection**: Video player monitors playback and only marks complete when video reaches the end
-4. **Streak Calculation**: ViewModel calculates consecutive days of completion
-5. **History View**: Calendar displays all past completions with color-coded indicators
+4. **Celebration**: Upon completion, a congratulatory screen appears showing your current streak with animations and encouraging messages
+5. **Streak Calculation**: ViewModel calculates consecutive days of completion
+6. **History View**: Calendar displays all past completions with color-coded indicators
 
 ## Adding New Videos
 

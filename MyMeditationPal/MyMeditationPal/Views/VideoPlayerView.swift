@@ -18,6 +18,8 @@ struct VideoPlayerView: View {
     @State private var hasReachedEnd = false
     @State private var playCount = 0
     @State private var showingExitConfirmation = false
+    @State private var showingCongratulations = false
+    @State private var currentStreak = 0
     
     var body: some View {
         ZStack {
@@ -88,6 +90,16 @@ struct VideoPlayerView: View {
         } message: {
             Text("Exiting now won't count this session as completed. You can always try again later!")
         }
+        .fullScreenCover(isPresented: $showingCongratulations) {
+            CongratulationsView(
+                exerciseType: exerciseType,
+                streak: currentStreak,
+                onDismiss: {
+                    showingCongratulations = false
+                    dismiss()
+                }
+            )
+        }
     }
     
     private func setupPlayer() {
@@ -121,14 +133,32 @@ struct VideoPlayerView: View {
             player?.seek(to: .zero)
             player?.play()
         } else {
-            // Mark as completed and dismiss
+            // Mark as completed
             hasReachedEnd = true
             viewModel.markCompleted(exerciseType: exerciseType)
             
-            // Delay dismiss slightly for better UX
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                dismiss()
+            // Get the updated streak
+            currentStreak = getStreakForExerciseType()
+            
+            // Show congratulations view
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                showingCongratulations = true
             }
+        }
+    }
+    
+    private func getStreakForExerciseType() -> Int {
+        switch exerciseType {
+        case .boxBreathing:
+            return viewModel.boxBreathingStreak
+        case .meditation(_):
+            return viewModel.meditationStreak
+        case .coherentBreathing(_):
+            return viewModel.coherentBreathingStreak
+        case .bodyScan:
+            return viewModel.bodyScanStreak
+        case .kegelExercise:
+            return viewModel.kegelExerciseStreak
         }
     }
     

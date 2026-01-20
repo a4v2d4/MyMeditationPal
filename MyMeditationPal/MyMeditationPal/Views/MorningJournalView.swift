@@ -16,6 +16,7 @@ struct MorningJournalView: View {
     @State private var affirmationItems: [String] = [""]
     @State private var greatDayItems: [String] = [""]
     @State private var isSaving = false
+    @State private var showingCongratulations = false
     
     enum MorningSection: String, CaseIterable {
         case gratitude = "Gratitude"
@@ -122,6 +123,16 @@ struct MorningJournalView: View {
         }
         .onAppear {
             loadExistingData()
+        }
+        .fullScreenCover(isPresented: $showingCongratulations) {
+            JournalCongratulationsView(
+                journalType: .morning,
+                streak: viewModel.morningJournalStreak,
+                onDismiss: {
+                    showingCongratulations = false
+                    dismiss()
+                }
+            )
         }
     }
     
@@ -356,6 +367,8 @@ struct MorningJournalView: View {
     private func saveAll() {
         isSaving = true
         
+        let wasAlreadyCompleted = viewModel.todayMorningJournalCompleted
+        
         // Save gratitude
         let nonEmptyGratitude = gratitudeItems.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         if !nonEmptyGratitude.isEmpty {
@@ -386,7 +399,13 @@ struct MorningJournalView: View {
         // Small delay for visual feedback
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isSaving = false
-            dismiss()
+            
+            // Show congratulations if just completed all sections
+            if allCompleted && !wasAlreadyCompleted {
+                showingCongratulations = true
+            } else {
+                dismiss()
+            }
         }
     }
 }
