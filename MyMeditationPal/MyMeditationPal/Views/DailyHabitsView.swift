@@ -1,0 +1,250 @@
+//
+//  DailyHabitsView.swift
+//  MyMeditationPal
+//
+//  Created by Aaron Van Doren on 1/20/26.
+//
+
+import SwiftUI
+
+struct DailyHabitsView: View {
+    @ObservedObject var viewModel: MeditationViewModel
+    @Environment(\.dismiss) private var dismiss
+    
+    @State private var habits: [DailyHabit] = [
+        DailyHabit(name: "Morning electrolytes", isCompleted: false),
+        DailyHabit(name: "Brush Teeth", isCompleted: false),
+        DailyHabit(name: "Cold Shower", isCompleted: false),
+        DailyHabit(name: "Direct Sunlight Walk", isCompleted: false),
+        DailyHabit(name: "Non-fiction book/audiobook for 15+ min", isCompleted: false),
+        DailyHabit(name: "30+ min. exercise (lifting, running, etc.)", isCompleted: false),
+        DailyHabit(name: "Relax Psoas w/ feet elevated for 15+ min", isCompleted: false),
+        DailyHabit(name: "Creatine Supplement", isCompleted: false),
+        DailyHabit(name: "Magnesium Supplement", isCompleted: false)
+    ]
+    
+    @State private var showingCongratulations = false
+    
+    var allHabitsCompleted: Bool {
+        habits.allSatisfy { $0.isCompleted }
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Theme.lightGray.ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    // Header
+                    headerView
+                    
+                    ScrollView {
+                        VStack(spacing: Theme.spacing) {
+                            // Progress card
+                            progressCard
+                            
+                            // Habits list
+                            VStack(spacing: 12) {
+                                ForEach($habits) { $habit in
+                                    HabitCheckboxView(habit: $habit, onToggle: {
+                                        handleHabitToggle()
+                                    })
+                                }
+                            }
+                            .padding(.horizontal, Theme.spacing)
+                            .padding(.bottom, 100)
+                        }
+                        .padding(.top, Theme.spacing)
+                    }
+                    
+                    // Bottom action button
+                    if allHabitsCompleted {
+                        completeButton
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                    .foregroundColor(Theme.primaryOrange)
+                }
+            }
+            .fullScreenCover(isPresented: $showingCongratulations) {
+                DailyHabitsCongratulationsView(
+                    streak: viewModel.dailyHabitsStreak,
+                    onDismiss: {
+                        showingCongratulations = false
+                        dismiss()
+                    }
+                )
+            }
+            .onAppear {
+                loadHabits()
+            }
+        }
+    }
+    
+    private var headerView: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 40))
+                .foregroundColor(Theme.primaryOrange)
+            
+            Text("Daily Habits")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(Theme.textPrimary)
+            
+            Text("Build your daily routine")
+                .font(.system(size: 16))
+                .foregroundColor(Theme.textSecondary)
+        }
+        .padding(.vertical, Theme.largePadding)
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+    }
+    
+    private var progressCard: some View {
+        let completedCount = habits.filter { $0.isCompleted }.count
+        let totalCount = habits.count
+        let progress = Double(completedCount) / Double(totalCount)
+        
+        return VStack(spacing: 12) {
+            HStack {
+                Text("Progress")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(Theme.textPrimary)
+                
+                Spacer()
+                
+                Text("\(completedCount) / \(totalCount)")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(Theme.textSecondary)
+            }
+            
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Theme.mediumGray)
+                        .frame(height: 12)
+                    
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Theme.successGreen)
+                        .frame(width: geometry.size.width * progress, height: 12)
+                        .animation(.spring(response: 0.3), value: progress)
+                }
+            }
+            .frame(height: 12)
+        }
+        .padding(Theme.spacing)
+        .background(Color.white)
+        .cornerRadius(Theme.cardCornerRadius)
+        .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)
+        .padding(.horizontal, Theme.spacing)
+    }
+    
+    private var completeButton: some View {
+        VStack(spacing: 0) {
+            Divider()
+            
+            Button(action: {
+                saveAndComplete()
+            }) {
+                Text("Complete Daily Habits")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Theme.successGreen)
+                    .cornerRadius(Theme.cardCornerRadius)
+                    .padding(.horizontal, Theme.spacing)
+                    .padding(.vertical, Theme.spacing)
+            }
+        }
+        .background(Color.white)
+    }
+    
+    private func handleHabitToggle() {
+        saveHabits()
+    }
+    
+    private func loadHabits() {
+        if let savedHabits = viewModel.loadTodayDailyHabits() {
+            habits = savedHabits
+        }
+    }
+    
+    private func saveHabits() {
+        viewModel.saveDailyHabits(habits)
+    }
+    
+    private func saveAndComplete() {
+        saveHabits()
+        viewModel.markDailyHabitsCompleted()
+        showingCongratulations = true
+    }
+}
+
+struct DailyHabit: Identifiable, Codable {
+    let id: UUID
+    var name: String
+    var isCompleted: Bool
+    
+    init(id: UUID = UUID(), name: String, isCompleted: Bool) {
+        self.id = id
+        self.name = name
+        self.isCompleted = isCompleted
+    }
+}
+
+struct HabitCheckboxView: View {
+    @Binding var habit: DailyHabit
+    let onToggle: () -> Void
+    
+    var body: some View {
+        Button(action: {
+            withAnimation(.spring(response: 0.3)) {
+                habit.isCompleted.toggle()
+                onToggle()
+            }
+        }) {
+            HStack(spacing: Theme.spacing) {
+                // Checkbox
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(habit.isCompleted ? Theme.successGreen : Theme.mediumGray, lineWidth: 2)
+                        .frame(width: 28, height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(habit.isCompleted ? Theme.successGreen : Color.clear)
+                        )
+                    
+                    if habit.isCompleted {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                
+                // Habit name
+                Text(habit.name)
+                    .font(.system(size: 16))
+                    .foregroundColor(habit.isCompleted ? Theme.textSecondary : Theme.textPrimary)
+                    .strikethrough(habit.isCompleted, color: Theme.textSecondary)
+                
+                Spacer()
+            }
+            .padding(Theme.spacing)
+            .background(Color.white)
+            .cornerRadius(Theme.cardCornerRadius)
+            .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+#Preview {
+    DailyHabitsView(viewModel: MeditationViewModel(persistenceController: .preview))
+}

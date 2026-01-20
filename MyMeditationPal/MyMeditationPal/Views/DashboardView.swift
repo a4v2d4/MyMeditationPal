@@ -13,6 +13,7 @@ struct DashboardView: View {
     @State private var showingCalendar = false
     @State private var showingMorningJournal = false
     @State private var showingNightJournal = false
+    @State private var showingDailyHabits = false
     @State private var showingCoherentBreathingDurationPicker = false
     @State private var showingMeditationDurationPicker = false
     @State private var isStreaksExpanded = false
@@ -57,6 +58,9 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingNightJournal) {
             NightJournalView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showingDailyHabits) {
+            DailyHabitsView(viewModel: viewModel)
         }
         .confirmationDialog("Choose Duration", isPresented: $showingCoherentBreathingDurationPicker, titleVisibility: .visible) {
             Button("5 Minutes") {
@@ -183,10 +187,26 @@ struct DashboardView: View {
                 )
                 
                 StreakCard(
+                    title: "Daily Habits",
+                    streak: viewModel.dailyHabitsStreak,
+                    color: Color(red: 0.3, green: 0.7, blue: 0.9)
+                )
+            }
+            
+            HStack(spacing: Theme.spacing) {
+                StreakCard(
                     title: "AM Journal",
                     streak: viewModel.morningJournalStreak,
                     color: Color(red: 0.95, green: 0.75, blue: 0.3)
                 )
+                
+                // Empty space for balance
+                StreakCard(
+                    title: "",
+                    streak: 0,
+                    color: Color.clear
+                )
+                .opacity(0)
             }
         }
     }
@@ -232,6 +252,13 @@ struct DashboardView: View {
                 isCompleted: viewModel.todayMorningJournalCompleted,
                 onTap: {
                     showingMorningJournal = true
+                }
+            )
+            
+            DailyHabitsCardView(
+                isCompleted: viewModel.todayDailyHabitsCompleted,
+                onTap: {
+                    showingDailyHabits = true
                 }
             )
             

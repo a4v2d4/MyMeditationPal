@@ -23,6 +23,7 @@ class MeditationViewModel: ObservableObject {
     @Published var todayHighlightCompleted: Bool = false
     @Published var todayLearningCompleted: Bool = false
     @Published var todayExcitementCompleted: Bool = false
+    @Published var todayDailyHabitsCompleted: Bool = false
     @Published var boxBreathingStreak: Int = 0
     @Published var meditationStreak: Int = 0
     @Published var coherentBreathingStreak: Int = 0
@@ -34,6 +35,7 @@ class MeditationViewModel: ObservableObject {
     @Published var highlightStreak: Int = 0
     @Published var learningStreak: Int = 0
     @Published var excitementStreak: Int = 0
+    @Published var dailyHabitsStreak: Int = 0
     
     // Composite streaks
     @Published var morningJournalStreak: Int = 0
@@ -89,6 +91,7 @@ class MeditationViewModel: ObservableObject {
                 todayHighlightCompleted = todayCompletion.value(forKey: "highlightCompleted") as? Bool ?? false
                 todayLearningCompleted = todayCompletion.value(forKey: "learningCompleted") as? Bool ?? false
                 todayExcitementCompleted = todayCompletion.value(forKey: "excitementCompleted") as? Bool ?? false
+                todayDailyHabitsCompleted = todayCompletion.value(forKey: "dailyHabitsCompleted") as? Bool ?? false
             } else {
                 // Create today's entry
                 createTodayEntry()
@@ -119,6 +122,8 @@ class MeditationViewModel: ObservableObject {
         completion.setValue(nil, forKey: "learningItems")
         completion.setValue(false, forKey: "excitementCompleted")
         completion.setValue(nil, forKey: "excitementItems")
+        completion.setValue(false, forKey: "dailyHabitsCompleted")
+        completion.setValue(nil, forKey: "dailyHabitsItems")
         
         do {
             try context.save()
@@ -195,6 +200,7 @@ class MeditationViewModel: ObservableObject {
         highlightStreak = calculateHighlightStreak()
         learningStreak = calculateLearningStreak()
         excitementStreak = calculateExcitementStreak()
+        dailyHabitsStreak = calculateDailyHabitsStreak()
         morningJournalStreak = calculateMorningJournalStreak()
         nightJournalStreak = calculateNightJournalStreak()
     }
@@ -942,7 +948,114 @@ class MeditationViewModel: ObservableObject {
         completion.setValue(nil, forKey: "learningItems")
         completion.setValue(false, forKey: "excitementCompleted")
         completion.setValue(nil, forKey: "excitementItems")
+        completion.setValue(false, forKey: "dailyHabitsCompleted")
+        completion.setValue(nil, forKey: "dailyHabitsItems")
         return completion
+    }
+    
+    // MARK: - Daily Habits Methods
+    
+    private func calculateDailyHabitsStreak() -> Int {
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \DailyCompletion.date, ascending: false)]
+        
+        do {
+            let completions = try context.fetch(fetchRequest)
+            var streak = 0
+            var currentDate = startOfDay()
+            
+            for completion in completions {
+                guard let completionDate = completion.date else { continue }
+                
+                if isSameDay(completionDate, currentDate) {
+                    if completion.value(forKey: "dailyHabitsCompleted") as? Bool ?? false {
+                        streak += 1
+                        currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                    } else {
+                        break
+                    }
+                } else if completionDate < currentDate {
+                    break
+                }
+            }
+            
+            return streak
+        } catch {
+            print("Error calculating daily habits streak: \(error)")
+            return 0
+        }
+    }
+    
+    func markDailyHabitsCompleted() {
+        let context = persistenceController.container.viewContext
+        let today = startOfDay()
+        
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                            today as NSDate,
+                                            Calendar.current.date(byAdding: .day, value: 1, to: today)! as NSDate)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            let todayCompletion = results.first ?? createDefaultCompletion(context: context, date: today)
+            
+            todayCompletion.setValue(true, forKey: "dailyHabitsCompleted")
+            todayDailyHabitsCompleted = true
+            
+            try context.save()
+            calculateStreaks()
+        } catch {
+            print("Error marking daily habits completion: \(error)")
+        }
+    }
+    
+    func saveDailyHabits(_ habits: [DailyHabit]) {
+        let context = persistenceController.container.viewContext
+        let today = startOfDay()
+        
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                            today as NSDate,
+                                            Calendar.current.date(byAdding: .day, value: 1, to: today)! as NSDate)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            let todayCompletion = results.first ?? createDefaultCompletion(context: context, date: today)
+            
+            if let jsonData = try? JSONEncoder().encode(habits),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                todayCompletion.setValue(jsonString, forKey: "dailyHabitsItems")
+            }
+            
+            try context.save()
+        } catch {
+            print("Error saving daily habits: \(error)")
+        }
+    }
+    
+    func loadTodayDailyHabits() -> [DailyHabit]? {
+        let context = persistenceController.container.viewContext
+        let today = startOfDay()
+        
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                            today as NSDate,
+                                            Calendar.current.date(byAdding: .day, value: 1, to: today)! as NSDate)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let todayCompletion = results.first,
+               let jsonString = todayCompletion.value(forKey: "dailyHabitsItems") as? String,
+               let jsonData = jsonString.data(using: .utf8),
+               let habits = try? JSONDecoder().decode([DailyHabit].self, from: jsonData) {
+                return habits
+            }
+        } catch {
+            print("Error loading daily habits: \(error)")
+        }
+        
+        return nil
     }
     
     // MARK: - Composite Journal Streaks
