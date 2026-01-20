@@ -1058,6 +1058,14 @@ class MeditationViewModel: ObservableObject {
         return nil
     }
     
+    func getTodayDailyHabitsProgress() -> (completed: Int, total: Int)? {
+        guard let habits = loadTodayDailyHabits() else {
+            return nil
+        }
+        let completedCount = habits.filter { $0.isCompleted }.count
+        return (completed: completedCount, total: habits.count)
+    }
+    
     // MARK: - Composite Journal Streaks
     
     private func calculateMorningJournalStreak() -> Int {
