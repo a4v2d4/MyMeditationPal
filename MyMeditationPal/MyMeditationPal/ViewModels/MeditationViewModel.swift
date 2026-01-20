@@ -1066,6 +1066,61 @@ class MeditationViewModel: ObservableObject {
         return (completed: completedCount, total: habits.count)
     }
     
+    // MARK: - Individual Habit Streak Tracking
+    
+    func calculateIndividualHabitStreak(habitId: UUID) -> Int {
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \DailyCompletion.date, ascending: false)]
+        
+        do {
+            let completions = try context.fetch(fetchRequest)
+            var streak = 0
+            var currentDate = startOfDay()
+            
+            for completion in completions {
+                guard let completionDate = completion.date else { continue }
+                
+                if isSameDay(completionDate, currentDate) {
+                    // Check if this specific habit was completed
+                    if let jsonString = completion.value(forKey: "dailyHabitsItems") as? String,
+                       let jsonData = jsonString.data(using: .utf8),
+                       let habits = try? JSONDecoder().decode([DailyHabit].self, from: jsonData) {
+                        
+                        if let habit = habits.first(where: { $0.id == habitId }), habit.isCompleted {
+                            streak += 1
+                            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                        } else {
+                            break
+                        }
+                    } else {
+                        break
+                    }
+                } else if completionDate < currentDate {
+                    // Gap in streak
+                    break
+                }
+            }
+            
+            return streak
+        } catch {
+            print("Error calculating individual habit streak: \(error)")
+            return 0
+        }
+    }
+    
+    func calculateAllIndividualHabitStreaks() -> [UUID: Int] {
+        guard let currentHabits = loadTodayDailyHabits() else {
+            return [:]
+        }
+        
+        var streaks: [UUID: Int] = [:]
+        for habit in currentHabits {
+            streaks[habit.id] = calculateIndividualHabitStreak(habitId: habit.id)
+        }
+        return streaks
+    }
+    
     // MARK: - Composite Journal Streaks
     
     private func calculateMorningJournalStreak() -> Int {

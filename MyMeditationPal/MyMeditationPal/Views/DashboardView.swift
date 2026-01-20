@@ -198,22 +198,6 @@ struct DashboardView: View {
                     color: Color(red: 0.3, green: 0.7, blue: 0.9)
                 )
             }
-            
-            HStack(spacing: Theme.spacing) {
-                StreakCard(
-                    title: "AM Journal",
-                    streak: viewModel.morningJournalStreak,
-                    color: Color(red: 0.95, green: 0.75, blue: 0.3)
-                )
-                
-                // Empty space for balance
-                StreakCard(
-                    title: "",
-                    streak: 0,
-                    color: Color.clear
-                )
-                .opacity(0)
-            }
         }
     }
     
@@ -221,10 +205,17 @@ struct DashboardView: View {
         Group {
             HStack(spacing: Theme.spacing) {
                 StreakCard(
+                    title: "AM Journal",
+                    streak: viewModel.morningJournalStreak,
+                    color: Color(red: 0.95, green: 0.75, blue: 0.3)
+                )
+                
+                StreakCard(
                     title: "PM Journal",
                     streak: viewModel.nightJournalStreak,
                     color: Color(red: 0.5, green: 0.4, blue: 0.7)
                 )
+                
             }
         }
     }

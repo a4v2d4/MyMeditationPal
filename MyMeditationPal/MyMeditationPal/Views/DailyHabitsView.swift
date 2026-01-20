@@ -23,6 +23,7 @@ struct DailyHabitsView: View {
         DailyHabit(name: "Magnesium Supplement", isCompleted: false)
     ]
     
+    @State private var habitStreaks: [UUID: Int] = [:]
     @State private var showingCongratulations = false
     
     var allHabitsCompleted: Bool {
@@ -46,9 +47,13 @@ struct DailyHabitsView: View {
                             // Habits list
                             VStack(spacing: 12) {
                                 ForEach($habits) { $habit in
-                                    HabitCheckboxView(habit: $habit, onToggle: {
-                                        handleHabitToggle()
-                                    })
+                                    HabitCheckboxView(
+                                        habit: $habit,
+                                        streak: habitStreaks[habit.id] ?? 0,
+                                        onToggle: {
+                                            handleHabitToggle()
+                                        }
+                                    )
                                 }
                             }
                             .padding(.horizontal, Theme.spacing)
@@ -83,6 +88,7 @@ struct DailyHabitsView: View {
             }
             .onAppear {
                 loadHabits()
+                loadStreaks()
             }
         }
     }
@@ -176,8 +182,14 @@ struct DailyHabitsView: View {
         }
     }
     
+    private func loadStreaks() {
+        habitStreaks = viewModel.calculateAllIndividualHabitStreaks()
+    }
+    
     private func saveHabits() {
         viewModel.saveDailyHabits(habits)
+        // Update streaks after saving
+        loadStreaks()
     }
     
     private func saveAndComplete() {
@@ -201,6 +213,7 @@ struct DailyHabit: Identifiable, Codable {
 
 struct HabitCheckboxView: View {
     @Binding var habit: DailyHabit
+    let streak: Int
     let onToggle: () -> Void
     
     var body: some View {
@@ -229,10 +242,25 @@ struct HabitCheckboxView: View {
                 }
                 
                 // Habit name
-                Text(habit.name)
-                    .font(.system(size: 16))
-                    .foregroundColor(habit.isCompleted ? Theme.textSecondary : Theme.textPrimary)
-                    .strikethrough(habit.isCompleted, color: Theme.textSecondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(habit.name)
+                        .font(.system(size: 16))
+                        .foregroundColor(habit.isCompleted ? Theme.textSecondary : Theme.textPrimary)
+                        .strikethrough(habit.isCompleted, color: Theme.textSecondary)
+                    
+                    // Streak indicator
+                    if streak > 0 {
+                        HStack(spacing: 4) {
+                            Image(systemName: "flame.fill")
+                                .font(.system(size: 11))
+                                .foregroundColor(.orange)
+                            
+                            Text("\(streak) day\(streak == 1 ? "" : "s")")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(Theme.textSecondary)
+                        }
+                    }
+                }
                 
                 Spacer()
             }
