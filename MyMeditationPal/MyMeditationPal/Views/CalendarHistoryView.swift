@@ -76,6 +76,7 @@ struct CalendarHistoryView: View {
                                         kegelExerciseCompleted: isCompleted(date: date, type: .kegelExercise),
                                         morningJournalCompleted: isMorningJournalCompleted(date: date),
                                         nightJournalCompleted: isNightJournalCompleted(date: date),
+                                        dailyHabitsCompleted: isDailyHabitsCompleted(date: date),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -103,6 +104,7 @@ struct CalendarHistoryView: View {
                         }
                         HStack(spacing: 16) {
                             LegendItem(color: Color(red: 0.5, green: 0.4, blue: 0.7), text: "Night")
+                            LegendItem(color: Color(red: 0.3, green: 0.7, blue: 0.9), text: "Habits")
                         }
                     }
                     .padding(.top, Theme.spacing)
@@ -216,6 +218,17 @@ struct CalendarHistoryView: View {
         }
         return false
     }
+    
+    private func isDailyHabitsCompleted(date: Date) -> Bool {
+        let calendar = Calendar.current
+        for completion in completions {
+            if let completionDate = completion.date,
+               calendar.isDate(completionDate, inSameDayAs: date) {
+                return completion.value(forKey: "dailyHabitsCompleted") as? Bool ?? false
+            }
+        }
+        return false
+    }
 }
 
 struct DayCell: View {
@@ -227,6 +240,7 @@ struct DayCell: View {
     let kegelExerciseCompleted: Bool
     let morningJournalCompleted: Bool
     let nightJournalCompleted: Bool
+    let dailyHabitsCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -278,6 +292,10 @@ struct DayCell: View {
                     HStack(spacing: 2) {
                         Circle()
                             .fill(nightJournalCompleted ? Color(red: 0.5, green: 0.4, blue: 0.7) : Theme.mediumGray.opacity(0.5))
+                            .frame(width: 6, height: 6)
+                        
+                        Circle()
+                            .fill(dailyHabitsCompleted ? Color(red: 0.3, green: 0.7, blue: 0.9) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                 }
