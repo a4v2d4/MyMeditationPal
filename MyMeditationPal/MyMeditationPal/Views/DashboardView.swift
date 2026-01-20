@@ -183,7 +183,7 @@ struct DashboardView: View {
                 )
                 
                 StreakCard(
-                    title: "Morning",
+                    title: "AM Journal",
                     streak: viewModel.morningJournalStreak,
                     color: Color(red: 0.95, green: 0.75, blue: 0.3)
                 )
@@ -195,7 +195,7 @@ struct DashboardView: View {
         Group {
             HStack(spacing: Theme.spacing) {
                 StreakCard(
-                    title: "Night",
+                    title: "PM Journal",
                     streak: viewModel.nightJournalStreak,
                     color: Color(red: 0.5, green: 0.4, blue: 0.7)
                 )
@@ -277,7 +277,7 @@ struct DashboardView: View {
                         .fill(Theme.primaryOrange.opacity(0.15))
                         .frame(width: 44, height: 44)
                     
-                    Image(systemName: "mic.fill")
+                    Image(systemName: "figure.mind.and.body")
                         .font(.system(size: 20))
                         .foregroundColor(Theme.primaryOrange)
                 }
@@ -377,27 +377,27 @@ struct StreakCard: View {
     let color: Color
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 4) {
             Text("\(streak)")
-                .font(.system(size: 40, weight: .bold))
+                .font(.system(size: 24, weight: .bold))
                 .foregroundColor(color)
             
-            HStack(spacing: 4) {
+            HStack(spacing: 3) {
                 Image(systemName: "flame.fill")
-                    .font(.system(size: 14))
+                    .font(.system(size: 11))
                     .foregroundColor(color)
                 
                 Text(title)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Theme.textSecondary)
             }
             
-            Text(streak == 1 ? "day streak" : "day streak")
-                .font(.system(size: 12))
+            Text(streak == 1 ? "day" : "days")
+                .font(.system(size: 10))
                 .foregroundColor(Theme.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 20)
+        .padding(.vertical, 12)
         .background(Color.white)
         .cornerRadius(Theme.cardCornerRadius)
         .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)

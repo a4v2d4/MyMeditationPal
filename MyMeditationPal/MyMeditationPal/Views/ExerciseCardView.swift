@@ -66,11 +66,11 @@ struct ExerciseCardView: View {
         case .boxBreathing:
             return "wind"
         case .meditation(_):
-            return "mic.fill"
+            return "figure.mind.and.body"
         case .coherentBreathing(_):
             return "waveform.path.ecg"
         case .bodyScan:
-            return "figure.mind.and.body"
+            return "brain.head.profile"
         case .kegelExercise:
             return "heart.fill"
         }
