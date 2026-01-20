@@ -9,7 +9,7 @@ import Foundation
 
 enum ExerciseType: Identifiable {
     case boxBreathing
-    case meditation
+    case meditation(duration: Int) // duration in minutes: 5 or 10
     case coherentBreathing(duration: Int) // duration in minutes: 5 or 10
     case bodyScan
     case kegelExercise
@@ -18,8 +18,8 @@ enum ExerciseType: Identifiable {
         switch self {
         case .boxBreathing:
             return "boxBreathing"
-        case .meditation:
-            return "meditation"
+        case .meditation(let duration):
+            return "meditation_\(duration)"
         case .coherentBreathing(let duration):
             return "coherentBreathing_\(duration)"
         case .bodyScan:
@@ -33,8 +33,8 @@ enum ExerciseType: Identifiable {
         switch self {
         case .boxBreathing:
             return "Box Breath Exercise"
-        case .meditation:
-            return "Daily Meditation"
+        case .meditation(let duration):
+            return "Daily Meditation (\(duration) min)"
         case .coherentBreathing(let duration):
             return "Coherent Breath Exercise (\(duration) min)"
         case .bodyScan:
@@ -48,8 +48,12 @@ enum ExerciseType: Identifiable {
         switch self {
         case .boxBreathing:
             return "deepbreaths1min"
-        case .meditation:
-            return "Single - Guided 10min"
+        case .meditation(let duration):
+            if duration == 5 {
+                return "SelfCareGuidedMeditation-5min"
+            } else {
+                return "Single - Guided 10min"
+            }
         case .coherentBreathing(let duration):
             return "HRV-\(duration)min-coherence"
         case .bodyScan:
@@ -63,7 +67,7 @@ enum ExerciseType: Identifiable {
         switch self {
         case .boxBreathing:
             return "mp4"
-        case .meditation:
+        case .meditation(_):
             return "mp3"
         case .coherentBreathing(_):
             return "mp4"
@@ -76,7 +80,7 @@ enum ExerciseType: Identifiable {
     
     var isAudioOnly: Bool {
         switch self {
-        case .meditation:
+        case .meditation(_):
             return true
         default:
             return false
@@ -87,8 +91,8 @@ enum ExerciseType: Identifiable {
         switch self {
         case .boxBreathing:
             return "1 min"
-        case .meditation:
-            return "10 min"
+        case .meditation(let duration):
+            return "\(duration) min"
         case .coherentBreathing(let duration):
             return "\(duration) min"
         case .bodyScan:

@@ -14,6 +14,8 @@ struct DashboardView: View {
     @State private var showingMorningJournal = false
     @State private var showingNightJournal = false
     @State private var showingCoherentBreathingDurationPicker = false
+    @State private var showingMeditationDurationPicker = false
+    @State private var isStreaksExpanded = false
     
     var body: some View {
         NavigationView {
@@ -26,11 +28,11 @@ struct DashboardView: View {
             Theme.lightGray.ignoresSafeArea()
             
             ScrollView {
-                VStack(spacing: Theme.largePadding) {
+                VStack(spacing: Theme.spacing) {
                     headerView
                     streakCardsView
                     exerciseCardsView
-                    Spacer(minLength: 40)
+                    Spacer(minLength: 20)
                 }
             }
         }
@@ -69,6 +71,19 @@ struct DashboardView: View {
         } message: {
             Text("Select the duration for your coherent breathing exercise")
         }
+        .confirmationDialog("Choose Duration", isPresented: $showingMeditationDurationPicker, titleVisibility: .visible) {
+            Button("5 Minutes") {
+                showingVideoPlayer = .meditation(duration: 5)
+            }
+            
+            Button("10 Minutes") {
+                showingVideoPlayer = .meditation(duration: 10)
+            }
+            
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Select the duration for your daily meditation")
+        }
         .onAppear {
             viewModel.loadTodayStatus()
         }
@@ -88,9 +103,44 @@ struct DashboardView: View {
     }
     
     private var streakCardsView: some View {
-        VStack(spacing: Theme.spacing) {
-            exerciseStreakCards
-            journalStreakCards
+        VStack(spacing: 0) {
+            // Collapsible header
+            Button(action: {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    isStreaksExpanded.toggle()
+                }
+            }) {
+                HStack {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(Theme.primaryOrange)
+                    
+                    Text("Streaks & Progress")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Theme.textPrimary)
+                    
+                    Spacer()
+                    
+                    Image(systemName: isStreaksExpanded ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(Theme.textSecondary)
+                }
+                .padding(Theme.spacing)
+                .background(Color.white)
+                .cornerRadius(Theme.cardCornerRadius)
+                .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            // Expandable content
+            if isStreaksExpanded {
+                VStack(spacing: Theme.spacing) {
+                    exerciseStreakCards
+                    journalStreakCards
+                }
+                .padding(.top, Theme.spacing)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
         }
         .padding(.horizontal, Theme.spacing)
     }
@@ -154,7 +204,7 @@ struct DashboardView: View {
     }
     
     private var exerciseCardsView: some View {
-        VStack(spacing: Theme.spacing) {
+        VStack(spacing: 10) {
             topExerciseCards
             journalCards
             bottomExerciseCards
@@ -172,13 +222,7 @@ struct DashboardView: View {
                 }
             )
             
-            ExerciseCardView(
-                exerciseType: .meditation,
-                isCompleted: viewModel.todayMeditationCompleted,
-                onTap: {
-                    showingVideoPlayer = .meditation
-                }
-            )
+            meditationCard
         }
     }
     
@@ -222,31 +266,94 @@ struct DashboardView: View {
         }
     }
     
-    private var coherentBreathingCard: some View {
+    private var meditationCard: some View {
         Button(action: {
-            showingCoherentBreathingDurationPicker = true
+            showingMeditationDurationPicker = true
         }) {
             HStack(spacing: Theme.spacing) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Coherent Breath Exercise")
-                        .font(.system(size: 18, weight: .semibold))
+                // Icon
+                ZStack {
+                    Circle()
+                        .fill(Theme.primaryOrange.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    
+                    Image(systemName: "mic.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(Theme.primaryOrange)
+                }
+                
+                // Title and duration
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Daily Meditation")
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Theme.textPrimary)
                     
                     Text("Choose 5 or 10 minutes")
-                        .font(.system(size: 14))
+                        .font(.system(size: 13))
                         .foregroundColor(Theme.textSecondary)
                 }
                 
                 Spacer()
                 
-                if viewModel.todayCoherentBreathingCompleted {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(Theme.successGreen)
-                } else {
+                HStack(spacing: 12) {
+                    if viewModel.todayMeditationCompleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.successGreen)
+                    }
+                    
                     Image(systemName: "play.circle.fill")
-                        .font(.system(size: 32))
+                        .font(.system(size: 28))
+                        .foregroundColor(viewModel.todayMeditationCompleted ? Theme.successGreen : Theme.primaryOrange)
+                }
+            }
+            .padding(Theme.spacing)
+            .background(Color.white)
+            .cornerRadius(Theme.cardCornerRadius)
+            .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private var coherentBreathingCard: some View {
+        Button(action: {
+            showingCoherentBreathingDurationPicker = true
+        }) {
+            HStack(spacing: Theme.spacing) {
+                // Icon
+                ZStack {
+                    Circle()
+                        .fill(Color(red: 0.4, green: 0.6, blue: 0.8).opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    
+                    Image(systemName: "waveform.path.ecg")
+                        .font(.system(size: 20))
                         .foregroundColor(Color(red: 0.4, green: 0.6, blue: 0.8))
+                }
+                
+                // Title and duration
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Coherent Breath Exercise")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Theme.textPrimary)
+                    
+                    Text("Choose 5 or 10 minutes")
+                        .font(.system(size: 13))
+                        .foregroundColor(Theme.textSecondary)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    if viewModel.todayCoherentBreathingCompleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.successGreen)
+                    }
+                    
+                    Image(systemName: "play.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(viewModel.todayCoherentBreathingCompleted ? Theme.successGreen : Color(red: 0.4, green: 0.6, blue: 0.8))
                 }
             }
             .padding(Theme.spacing)

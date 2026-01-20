@@ -70,7 +70,7 @@ struct CalendarHistoryView: View {
                                     DayCell(
                                         date: date,
                                         boxBreathingCompleted: isCompleted(date: date, type: .boxBreathing),
-                                        meditationCompleted: isCompleted(date: date, type: .meditation),
+                                        meditationCompleted: isCompleted(date: date, type: .meditation(duration: 10)),
                                         coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing(duration: 5)),
                                         bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
                                         kegelExerciseCompleted: isCompleted(date: date, type: .kegelExercise),
@@ -175,7 +175,7 @@ struct CalendarHistoryView: View {
                 switch type {
                 case .boxBreathing:
                     return completion.boxBreathingCompleted
-                case .meditation:
+                case .meditation(_):
                     return completion.meditationCompleted
                 case .coherentBreathing(_):
                     return completion.coherentBreathingCompleted

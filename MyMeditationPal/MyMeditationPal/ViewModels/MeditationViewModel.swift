@@ -160,7 +160,7 @@ class MeditationViewModel: ObservableObject {
             case .boxBreathing:
                 todayCompletion.boxBreathingCompleted = true
                 todayBoxBreathingCompleted = true
-            case .meditation:
+            case .meditation(_):
                 todayCompletion.meditationCompleted = true
                 todayMeditationCompleted = true
             case .coherentBreathing(_):

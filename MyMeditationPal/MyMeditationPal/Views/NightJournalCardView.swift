@@ -13,87 +13,50 @@ struct NightJournalCardView: View {
     
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 0) {
-                // Icon header
+            HStack(spacing: Theme.spacing) {
+                // Icon
                 ZStack {
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 0.35, green: 0.4, blue: 0.75),
-                            Color(red: 0.5, green: 0.3, blue: 0.6)
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .frame(height: 180)
+                    Circle()
+                        .fill(Color(red: 0.5, green: 0.4, blue: 0.7).opacity(0.15))
+                        .frame(width: 44, height: 44)
                     
-                    VStack(spacing: 12) {
-                        Image(systemName: "moon.stars.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.white.opacity(0.9))
-                        
-                        Text("Evening Reflection")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.white.opacity(0.9))
-                    }
-                    
-                    // Play/Edit overlay
-                    if !isCompleted {
-                        VStack {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                Circle()
-                                    .fill(Color.white.opacity(0.9))
-                                    .frame(width: 50, height: 50)
-                                
-                                Image(systemName: "pencil")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(Color(red: 0.5, green: 0.4, blue: 0.7))
-                                Spacer()
-                            }
-                            Spacer()
-                        }
-                    }
+                    Image(systemName: "moon.stars.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(Color(red: 0.5, green: 0.4, blue: 0.7))
                 }
                 
-                // Info section
-                HStack {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Night Journal")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(Theme.textPrimary)
-                        
-                        Text("Highlights, Learnings & Tomorrow")
-                            .font(.system(size: 15))
-                            .foregroundColor(Theme.textSecondary)
-                    }
+                // Title and description
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Night Journal")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Theme.textPrimary)
                     
-                    Spacer()
-                    
-                    // Checkbox
-                    ZStack {
-                        Circle()
-                            .stroke(isCompleted ? Theme.successGreen : Theme.mediumGray, lineWidth: 2)
-                            .frame(width: 32, height: 32)
-                        
-                        if isCompleted {
-                            Circle()
-                                .fill(Theme.successGreen)
-                                .frame(width: 32, height: 32)
-                            
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                    }
+                    Text("Highlights, Learnings & Tomorrow")
+                        .font(.system(size: 13))
+                        .foregroundColor(Theme.textSecondary)
                 }
-                .padding(Theme.spacing)
+                
+                Spacer()
+                
+                // Status indicators
+                HStack(spacing: 12) {
+                    if isCompleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.successGreen)
+                    }
+                    
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(isCompleted ? Theme.successGreen : Color(red: 0.5, green: 0.4, blue: 0.7))
+                }
             }
+            .padding(Theme.spacing)
             .background(Color.white)
             .cornerRadius(Theme.cardCornerRadius)
             .shadow(color: Color.black.opacity(0.06), radius: Theme.cardShadowRadius, x: 0, y: 4)
         }
-        .buttonStyle(ScaleButtonStyle())
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
