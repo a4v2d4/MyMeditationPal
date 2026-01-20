@@ -35,6 +35,19 @@ class MeditationViewModel: ObservableObject {
     @Published var learningStreak: Int = 0
     @Published var excitementStreak: Int = 0
     
+    // Composite streaks
+    @Published var morningJournalStreak: Int = 0
+    @Published var nightJournalStreak: Int = 0
+    
+    // Composite completion
+    var todayMorningJournalCompleted: Bool {
+        todayGratitudeCompleted && todayAffirmationCompleted && todayGreatDayCompleted
+    }
+    
+    var todayNightJournalCompleted: Bool {
+        todayHighlightCompleted && todayLearningCompleted && todayExcitementCompleted
+    }
+    
     init(persistenceController: PersistenceController = .shared) {
         self.persistenceController = persistenceController
         loadTodayStatus()
@@ -182,6 +195,8 @@ class MeditationViewModel: ObservableObject {
         highlightStreak = calculateHighlightStreak()
         learningStreak = calculateLearningStreak()
         excitementStreak = calculateExcitementStreak()
+        morningJournalStreak = calculateMorningJournalStreak()
+        nightJournalStreak = calculateNightJournalStreak()
     }
     
     private func calculateStreak(for keyPath: KeyPath<DailyCompletion, Bool>) -> Int {
@@ -928,6 +943,80 @@ class MeditationViewModel: ObservableObject {
         completion.setValue(false, forKey: "excitementCompleted")
         completion.setValue(nil, forKey: "excitementItems")
         return completion
+    }
+    
+    // MARK: - Composite Journal Streaks
+    
+    private func calculateMorningJournalStreak() -> Int {
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \DailyCompletion.date, ascending: false)]
+        
+        do {
+            let completions = try context.fetch(fetchRequest)
+            var streak = 0
+            var currentDate = startOfDay()
+            
+            for completion in completions {
+                guard let completionDate = completion.date else { continue }
+                
+                if isSameDay(completionDate, currentDate) {
+                    let gratitudeComplete = completion.value(forKey: "gratitudeCompleted") as? Bool ?? false
+                    let affirmationComplete = completion.value(forKey: "affirmationCompleted") as? Bool ?? false
+                    let greatDayComplete = completion.value(forKey: "greatDayCompleted") as? Bool ?? false
+                    
+                    if gratitudeComplete && affirmationComplete && greatDayComplete {
+                        streak += 1
+                        currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                    } else {
+                        break
+                    }
+                } else if completionDate < currentDate {
+                    break
+                }
+            }
+            
+            return streak
+        } catch {
+            print("Error calculating morning journal streak: \(error)")
+            return 0
+        }
+    }
+    
+    private func calculateNightJournalStreak() -> Int {
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \DailyCompletion.date, ascending: false)]
+        
+        do {
+            let completions = try context.fetch(fetchRequest)
+            var streak = 0
+            var currentDate = startOfDay()
+            
+            for completion in completions {
+                guard let completionDate = completion.date else { continue }
+                
+                if isSameDay(completionDate, currentDate) {
+                    let highlightComplete = completion.value(forKey: "highlightCompleted") as? Bool ?? false
+                    let learningComplete = completion.value(forKey: "learningCompleted") as? Bool ?? false
+                    let excitementComplete = completion.value(forKey: "excitementCompleted") as? Bool ?? false
+                    
+                    if highlightComplete && learningComplete && excitementComplete {
+                        streak += 1
+                        currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+                    } else {
+                        break
+                    }
+                } else if completionDate < currentDate {
+                    break
+                }
+            }
+            
+            return streak
+        } catch {
+            print("Error calculating night journal streak: \(error)")
+            return 0
+        }
     }
     
     // MARK: - Fetch All Completions for Calendar

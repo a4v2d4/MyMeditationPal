@@ -11,12 +11,8 @@ struct DashboardView: View {
     @StateObject private var viewModel = MeditationViewModel()
     @State private var showingVideoPlayer: ExerciseType?
     @State private var showingCalendar = false
-    @State private var showingGratitudeJournal = false
-    @State private var showingAffirmationJournal = false
-    @State private var showingGreatDayJournal = false
-    @State private var showingHighlightsJournal = false
-    @State private var showingLearningsJournal = false
-    @State private var showingExcitementJournal = false
+    @State private var showingMorningJournal = false
+    @State private var showingNightJournal = false
     @State private var showingCoherentBreathingDurationPicker = false
     
     var body: some View {
@@ -54,23 +50,11 @@ struct DashboardView: View {
         .sheet(isPresented: $showingCalendar) {
             CalendarHistoryView(viewModel: viewModel)
         }
-        .sheet(isPresented: $showingGratitudeJournal) {
-            GratitudeJournalView(viewModel: viewModel)
+        .sheet(isPresented: $showingMorningJournal) {
+            MorningJournalView(viewModel: viewModel)
         }
-        .sheet(isPresented: $showingAffirmationJournal) {
-            DailyAffirmationView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $showingGreatDayJournal) {
-            GreatDayView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $showingHighlightsJournal) {
-            HighlightsView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $showingLearningsJournal) {
-            LearningsView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $showingExcitementJournal) {
-            TomorrowExcitementView(viewModel: viewModel)
+        .sheet(isPresented: $showingNightJournal) {
+            NightJournalView(viewModel: viewModel)
         }
         .confirmationDialog("Choose Duration", isPresented: $showingCoherentBreathingDurationPicker, titleVisibility: .visible) {
             Button("5 Minutes") {
@@ -147,6 +131,12 @@ struct DashboardView: View {
                     streak: viewModel.kegelExerciseStreak,
                     color: Color(red: 0.8, green: 0.5, blue: 0.6)
                 )
+                
+                StreakCard(
+                    title: "Morning",
+                    streak: viewModel.morningJournalStreak,
+                    color: Color(red: 0.95, green: 0.75, blue: 0.3)
+                )
             }
         }
     }
@@ -155,43 +145,9 @@ struct DashboardView: View {
         Group {
             HStack(spacing: Theme.spacing) {
                 StreakCard(
-                    title: "Gratitude",
-                    streak: viewModel.gratitudeStreak,
-                    color: Color(red: 0.85, green: 0.65, blue: 0.75)
-                )
-                
-                StreakCard(
-                    title: "Affirmation",
-                    streak: viewModel.affirmationStreak,
-                    color: Color(red: 0.3, green: 0.7, blue: 0.6)
-                )
-            }
-            
-            HStack(spacing: Theme.spacing) {
-                StreakCard(
-                    title: "Great Day",
-                    streak: viewModel.greatDayStreak,
-                    color: Color(red: 0.95, green: 0.75, blue: 0.3)
-                )
-                
-                StreakCard(
-                    title: "Highlights",
-                    streak: viewModel.highlightStreak,
-                    color: Color(red: 1.0, green: 0.6, blue: 0.4)
-                )
-            }
-            
-            HStack(spacing: Theme.spacing) {
-                StreakCard(
-                    title: "Learning",
-                    streak: viewModel.learningStreak,
+                    title: "Night",
+                    streak: viewModel.nightJournalStreak,
                     color: Color(red: 0.5, green: 0.4, blue: 0.7)
-                )
-                
-                StreakCard(
-                    title: "Excitement",
-                    streak: viewModel.excitementStreak,
-                    color: Color(red: 0.4, green: 0.75, blue: 0.95)
                 )
             }
         }
@@ -228,24 +184,10 @@ struct DashboardView: View {
     
     private var journalCards: some View {
         Group {
-            GratitudeCardView(
-                isCompleted: viewModel.todayGratitudeCompleted,
+            MorningJournalCardView(
+                isCompleted: viewModel.todayMorningJournalCompleted,
                 onTap: {
-                    showingGratitudeJournal = true
-                }
-            )
-            
-            AffirmationCardView(
-                isCompleted: viewModel.todayAffirmationCompleted,
-                onTap: {
-                    showingAffirmationJournal = true
-                }
-            )
-            
-            GreatDayCardView(
-                isCompleted: viewModel.todayGreatDayCompleted,
-                onTap: {
-                    showingGreatDayJournal = true
+                    showingMorningJournal = true
                 }
             )
             
@@ -257,24 +199,10 @@ struct DashboardView: View {
                 }
             )
             
-            HighlightsCardView(
-                isCompleted: viewModel.todayHighlightCompleted,
+            NightJournalCardView(
+                isCompleted: viewModel.todayNightJournalCompleted,
                 onTap: {
-                    showingHighlightsJournal = true
-                }
-            )
-            
-            LearningsCardView(
-                isCompleted: viewModel.todayLearningCompleted,
-                onTap: {
-                    showingLearningsJournal = true
-                }
-            )
-            
-            TomorrowExcitementCardView(
-                isCompleted: viewModel.todayExcitementCompleted,
-                onTap: {
-                    showingExcitementJournal = true
+                    showingNightJournal = true
                 }
             )
         }

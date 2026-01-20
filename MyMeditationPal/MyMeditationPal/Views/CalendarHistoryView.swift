@@ -73,12 +73,9 @@ struct CalendarHistoryView: View {
                                         meditationCompleted: isCompleted(date: date, type: .meditation),
                                         coherentBreathingCompleted: isCompleted(date: date, type: .coherentBreathing(duration: 5)),
                                         bodyScanCompleted: isCompleted(date: date, type: .bodyScan),
-                                        gratitudeCompleted: isGratitudeCompleted(date: date),
-                                        affirmationCompleted: isAffirmationCompleted(date: date),
-                                        greatDayCompleted: isGreatDayCompleted(date: date),
-                                        highlightCompleted: isHighlightCompleted(date: date),
-                                        learningCompleted: isLearningCompleted(date: date),
-                                        excitementCompleted: isExcitementCompleted(date: date),
+                                        kegelExerciseCompleted: isCompleted(date: date, type: .kegelExercise),
+                                        morningJournalCompleted: isMorningJournalCompleted(date: date),
+                                        nightJournalCompleted: isNightJournalCompleted(date: date),
                                         isToday: Calendar.current.isDateInToday(date)
                                     )
                                 } else {
@@ -101,16 +98,11 @@ struct CalendarHistoryView: View {
                             LegendItem(color: Color(red: 0.6, green: 0.4, blue: 0.8), text: "Body Scan")
                         }
                         HStack(spacing: 16) {
-                            LegendItem(color: Color(red: 0.85, green: 0.65, blue: 0.75), text: "Gratitude")
-                            LegendItem(color: Color(red: 0.3, green: 0.7, blue: 0.6), text: "Affirmation")
+                            LegendItem(color: Color(red: 0.8, green: 0.5, blue: 0.6), text: "Kegel")
+                            LegendItem(color: Color(red: 0.95, green: 0.75, blue: 0.3), text: "Morning")
                         }
                         HStack(spacing: 16) {
-                            LegendItem(color: Color(red: 0.95, green: 0.75, blue: 0.3), text: "Great Day")
-                            LegendItem(color: Color(red: 1.0, green: 0.6, blue: 0.4), text: "Highlights")
-                        }
-                        HStack(spacing: 16) {
-                            LegendItem(color: Color(red: 0.5, green: 0.4, blue: 0.7), text: "Learning")
-                            LegendItem(color: Color(red: 0.4, green: 0.75, blue: 0.95), text: "Excitement")
+                            LegendItem(color: Color(red: 0.5, green: 0.4, blue: 0.7), text: "Night")
                         }
                     }
                     .padding(.top, Theme.spacing)
@@ -197,67 +189,29 @@ struct CalendarHistoryView: View {
         return false
     }
     
-    private func isGratitudeCompleted(date: Date) -> Bool {
+    private func isMorningJournalCompleted(date: Date) -> Bool {
         let calendar = Calendar.current
         for completion in completions {
             if let completionDate = completion.date,
                calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "gratitudeCompleted") as? Bool ?? false
+                let gratitudeComplete = completion.value(forKey: "gratitudeCompleted") as? Bool ?? false
+                let affirmationComplete = completion.value(forKey: "affirmationCompleted") as? Bool ?? false
+                let greatDayComplete = completion.value(forKey: "greatDayCompleted") as? Bool ?? false
+                return gratitudeComplete && affirmationComplete && greatDayComplete
             }
         }
         return false
     }
     
-    private func isAffirmationCompleted(date: Date) -> Bool {
+    private func isNightJournalCompleted(date: Date) -> Bool {
         let calendar = Calendar.current
         for completion in completions {
             if let completionDate = completion.date,
                calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "affirmationCompleted") as? Bool ?? false
-            }
-        }
-        return false
-    }
-    
-    private func isGreatDayCompleted(date: Date) -> Bool {
-        let calendar = Calendar.current
-        for completion in completions {
-            if let completionDate = completion.date,
-               calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "greatDayCompleted") as? Bool ?? false
-            }
-        }
-        return false
-    }
-    
-    private func isHighlightCompleted(date: Date) -> Bool {
-        let calendar = Calendar.current
-        for completion in completions {
-            if let completionDate = completion.date,
-               calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "highlightCompleted") as? Bool ?? false
-            }
-        }
-        return false
-    }
-    
-    private func isLearningCompleted(date: Date) -> Bool {
-        let calendar = Calendar.current
-        for completion in completions {
-            if let completionDate = completion.date,
-               calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "learningCompleted") as? Bool ?? false
-            }
-        }
-        return false
-    }
-    
-    private func isExcitementCompleted(date: Date) -> Bool {
-        let calendar = Calendar.current
-        for completion in completions {
-            if let completionDate = completion.date,
-               calendar.isDate(completionDate, inSameDayAs: date) {
-                return completion.value(forKey: "excitementCompleted") as? Bool ?? false
+                let highlightComplete = completion.value(forKey: "highlightCompleted") as? Bool ?? false
+                let learningComplete = completion.value(forKey: "learningCompleted") as? Bool ?? false
+                let excitementComplete = completion.value(forKey: "excitementCompleted") as? Bool ?? false
+                return highlightComplete && learningComplete && excitementComplete
             }
         }
         return false
@@ -270,12 +224,9 @@ struct DayCell: View {
     let meditationCompleted: Bool
     let coherentBreathingCompleted: Bool
     let bodyScanCompleted: Bool
-    let gratitudeCompleted: Bool
-    let affirmationCompleted: Bool
-    let greatDayCompleted: Bool
-    let highlightCompleted: Bool
-    let learningCompleted: Bool
-    let excitementCompleted: Bool
+    let kegelExerciseCompleted: Bool
+    let morningJournalCompleted: Bool
+    let nightJournalCompleted: Bool
     let isToday: Bool
     
     private var dayNumber: Int {
@@ -316,31 +267,17 @@ struct DayCell: View {
                     
                     HStack(spacing: 2) {
                         Circle()
-                            .fill(gratitudeCompleted ? Color(red: 0.85, green: 0.65, blue: 0.75) : Theme.mediumGray.opacity(0.5))
+                            .fill(kegelExerciseCompleted ? Color(red: 0.8, green: 0.5, blue: 0.6) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                         
                         Circle()
-                            .fill(affirmationCompleted ? Color(red: 0.3, green: 0.7, blue: 0.6) : Theme.mediumGray.opacity(0.5))
+                            .fill(morningJournalCompleted ? Color(red: 0.95, green: 0.75, blue: 0.3) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                     
                     HStack(spacing: 2) {
                         Circle()
-                            .fill(greatDayCompleted ? Color(red: 0.95, green: 0.75, blue: 0.3) : Theme.mediumGray.opacity(0.5))
-                            .frame(width: 6, height: 6)
-                        
-                        Circle()
-                            .fill(highlightCompleted ? Color(red: 1.0, green: 0.6, blue: 0.4) : Theme.mediumGray.opacity(0.5))
-                            .frame(width: 6, height: 6)
-                    }
-                    
-                    HStack(spacing: 2) {
-                        Circle()
-                            .fill(learningCompleted ? Color(red: 0.5, green: 0.4, blue: 0.7) : Theme.mediumGray.opacity(0.5))
-                            .frame(width: 6, height: 6)
-                        
-                        Circle()
-                            .fill(excitementCompleted ? Color(red: 0.4, green: 0.75, blue: 0.95) : Theme.mediumGray.opacity(0.5))
+                            .fill(nightJournalCompleted ? Color(red: 0.5, green: 0.4, blue: 0.7) : Theme.mediumGray.opacity(0.5))
                             .frame(width: 6, height: 6)
                     }
                 }
