@@ -9,6 +9,23 @@ import SwiftUI
 import AVKit
 import MediaPlayer
 
+// Custom video player wrapper that supports background audio
+struct CustomVideoPlayer: UIViewControllerRepresentable {
+    let player: AVPlayer
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = true
+        controller.allowsPictureInPicturePlayback = true
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        // No updates needed
+    }
+}
+
 struct VideoPlayerView: View {
     let exerciseType: ExerciseType
     @ObservedObject var viewModel: MeditationViewModel
@@ -114,8 +131,8 @@ struct VideoPlayerView: View {
                         cleanupPlayer()
                     }
                 } else {
-                    // Video player
-                    VideoPlayer(player: player)
+                    // Video player with background audio support
+                    CustomVideoPlayer(player: player)
                         .ignoresSafeArea()
                         .onDisappear {
                             cleanupPlayer()
@@ -150,6 +167,8 @@ struct VideoPlayerView: View {
         }
         .onAppear {
             setupPlayer()
+            // Ensure audio session remains active when entering background
+            setupBackgroundAudioHandling()
         }
         .alert("Exit Exercise?", isPresented: $showingExitConfirmation) {
             Button("Cancel", role: .cancel) { }
@@ -177,7 +196,16 @@ struct VideoPlayerView: View {
             return
         }
         
-        let newPlayer = AVPlayer(url: mediaURL)
+        // Configure audio session for background playback
+        configureAudioSession()
+        
+        let playerItem = AVPlayerItem(url: mediaURL)
+        let newPlayer = AVPlayer(playerItem: playerItem)
+        
+        // Enable audio output for background playback (important for video)
+        newPlayer.allowsExternalPlayback = true
+        newPlayer.appliesMediaSelectionCriteriaAutomatically = true
+        
         self.player = newPlayer
         
         // Observe when media ends
@@ -198,7 +226,7 @@ struct VideoPlayerView: View {
         }
         
         // Add time observer for progress tracking
-        let interval = CMTime(seconds: 0.1, preferredTimescale: 600)
+        let interval = CMTime(seconds: 0.5, preferredTimescale: 600)
         timeObserver = newPlayer.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak newPlayer] time in
             guard let player = newPlayer else { return }
             let timeSeconds = CMTimeGetSeconds(time)
@@ -213,7 +241,22 @@ struct VideoPlayerView: View {
                     duration = durationSeconds
                 }
             }
+            
+            // Sync isPlaying state with actual player rate (important for video controls)
+            let playerIsPlaying = player.rate > 0
+            if isPlaying != playerIsPlaying {
+                isPlaying = playerIsPlaying
+            }
+            
+            // Update now playing info with current time
+            updateNowPlayingInfo()
         }
+        
+        // Set up remote command handlers for lock screen controls
+        setupRemoteCommandCenter()
+        
+        // Set up now playing info
+        setupNowPlayingInfo()
         
         // Start playing
         newPlayer.play()
@@ -267,6 +310,12 @@ struct VideoPlayerView: View {
         player?.pause()
         player = nil
         NotificationCenter.default.removeObserver(self)
+        
+        // Clean up remote command center
+        cleanupRemoteCommandCenter()
+        
+        // Clear now playing info
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
     private func exitWithoutCompleting() {
@@ -285,6 +334,7 @@ struct VideoPlayerView: View {
             player.play()
         }
         isPlaying.toggle()
+        updateNowPlayingPlaybackRate()
     }
     
     private func skipBackward() {
@@ -292,6 +342,7 @@ struct VideoPlayerView: View {
         let newTime = max(currentTime - 10, 0)
         player.seek(to: CMTime(seconds: newTime, preferredTimescale: 600))
         currentTime = newTime
+        updateNowPlayingInfo()
     }
     
     private func skipForward() {
@@ -299,6 +350,7 @@ struct VideoPlayerView: View {
         let newTime = min(currentTime + 10, duration)
         player.seek(to: CMTime(seconds: newTime, preferredTimescale: 600))
         currentTime = newTime
+        updateNowPlayingInfo()
     }
     
     private func formatTime(_ timeInSeconds: Double) -> String {
@@ -309,5 +361,147 @@ struct VideoPlayerView: View {
         let minutes = Int(timeInSeconds) / 60
         let seconds = Int(timeInSeconds) % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+    
+    // MARK: - Background Audio & Lock Screen Controls
+    
+    private func configureAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            // Use .moviePlayback mode for video, .default for audio
+            let mode: AVAudioSession.Mode = exerciseType.isAudioOnly ? .default : .moviePlayback
+            try audioSession.setCategory(.playback, mode: mode, options: [])
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error.localizedDescription)")
+        }
+    }
+    
+    private func setupBackgroundAudioHandling() {
+        // Observe audio session interruptions
+        NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance(),
+            queue: .main
+        ) { [weak player] notification in
+            guard let userInfo = notification.userInfo,
+                  let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+                return
+            }
+            
+            // Handle interruption
+            if type == .began {
+                // Interruption began - player will pause automatically
+                self.isPlaying = false
+            } else if type == .ended {
+                // Interruption ended - resume if appropriate
+                if let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt {
+                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                    if options.contains(.shouldResume) {
+                        player?.play()
+                        self.isPlaying = true
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setupRemoteCommandCenter() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        
+        // Play command
+        commandCenter.playCommand.isEnabled = true
+        commandCenter.playCommand.addTarget { _ in
+            guard let player = self.player else { return .commandFailed }
+            player.play()
+            self.isPlaying = true
+            self.updateNowPlayingPlaybackRate()
+            return .success
+        }
+        
+        // Pause command
+        commandCenter.pauseCommand.isEnabled = true
+        commandCenter.pauseCommand.addTarget { _ in
+            guard let player = self.player else { return .commandFailed }
+            player.pause()
+            self.isPlaying = false
+            self.updateNowPlayingPlaybackRate()
+            return .success
+        }
+        
+        // Toggle play/pause
+        commandCenter.togglePlayPauseCommand.isEnabled = true
+        commandCenter.togglePlayPauseCommand.addTarget { _ in
+            self.togglePlayPause()
+            return .success
+        }
+        
+        // Skip forward
+        commandCenter.skipForwardCommand.isEnabled = true
+        commandCenter.skipForwardCommand.preferredIntervals = [10]
+        commandCenter.skipForwardCommand.addTarget { _ in
+            self.skipForward()
+            return .success
+        }
+        
+        // Skip backward
+        commandCenter.skipBackwardCommand.isEnabled = true
+        commandCenter.skipBackwardCommand.preferredIntervals = [10]
+        commandCenter.skipBackwardCommand.addTarget { _ in
+            self.skipBackward()
+            return .success
+        }
+    }
+    
+    private func cleanupRemoteCommandCenter() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.playCommand.removeTarget(nil)
+        commandCenter.pauseCommand.removeTarget(nil)
+        commandCenter.togglePlayPauseCommand.removeTarget(nil)
+        commandCenter.skipForwardCommand.removeTarget(nil)
+        commandCenter.skipBackwardCommand.removeTarget(nil)
+    }
+    
+    private func setupNowPlayingInfo() {
+        var nowPlayingInfo = [String: Any]()
+        
+        nowPlayingInfo[MPMediaItemPropertyTitle] = exerciseType.title
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "MyMeditationPal"
+        
+        if duration > 0 {
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
+        }
+        
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+    
+    private func updateNowPlayingInfo() {
+        guard var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo else {
+            setupNowPlayingInfo()
+            return
+        }
+        
+        if duration > 0 {
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
+        }
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+    
+    private func updateNowPlayingPlaybackRate() {
+        guard var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo else {
+            setupNowPlayingInfo()
+            return
+        }
+        
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 }
