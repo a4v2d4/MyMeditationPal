@@ -219,6 +219,19 @@ struct HabitCheckboxView: View {
     let streak: Int
     let onToggle: () -> Void
     
+    private var streakColor: Color {
+        switch streak {
+        case 0: return Color.gray.opacity(0.5)
+        case 1...6: return .orange
+        case 7...29: return Color(red: 1.0, green: 0.6, blue: 0.0)
+        default: return Color(red: 0.9, green: 0.3, blue: 0.0)
+        }
+    }
+    
+    private var streakLabel: String {
+        streak == 0 ? "Start streak" : "\(streak) day\(streak == 1 ? "" : "s")"
+    }
+    
     var body: some View {
         Button(action: {
             withAnimation(.spring(response: 0.3)) {
@@ -250,22 +263,24 @@ struct HabitCheckboxView: View {
                         .font(.system(size: 16))
                         .foregroundColor(habit.isCompleted ? Theme.textSecondary : Theme.textPrimary)
                         .strikethrough(habit.isCompleted, color: Theme.textSecondary)
-                    
-                    // Streak indicator
-                    if streak > 0 {
-                        HStack(spacing: 4) {
-                            Image(systemName: "flame.fill")
-                                .font(.system(size: 11))
-                                .foregroundColor(.orange)
-                            
-                            Text("\(streak) day\(streak == 1 ? "" : "s")")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(Theme.textSecondary)
-                        }
-                    }
                 }
                 
                 Spacer()
+                
+                // Streak badge
+                HStack(spacing: 3) {
+                    Image(systemName: streak == 0 ? "flame" : "flame.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(streakColor)
+                    
+                    Text(streakLabel)
+                        .font(.system(size: 12, weight: streak == 0 ? .regular : .semibold))
+                        .foregroundColor(streakColor)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(streakColor.opacity(0.1))
+                .cornerRadius(10)
             }
             .padding(Theme.spacing)
             .background(Color.white)
