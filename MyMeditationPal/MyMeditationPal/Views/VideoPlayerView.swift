@@ -18,6 +18,7 @@ struct CustomVideoPlayer: UIViewControllerRepresentable {
         controller.player = player
         controller.showsPlaybackControls = true
         controller.allowsPictureInPicturePlayback = true
+        controller.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         return controller
     }
     
@@ -390,15 +391,13 @@ struct VideoPlayerView: View {
                 return
             }
             
-            // Handle interruption
             if type == .began {
-                // Interruption began - player will pause automatically
                 self.isPlaying = false
             } else if type == .ended {
-                // Interruption ended - resume if appropriate
                 if let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt {
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                     if options.contains(.shouldResume) {
+                        try? AVAudioSession.sharedInstance().setActive(true)
                         player?.play()
                         self.isPlaying = true
                     }
