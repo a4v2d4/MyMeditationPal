@@ -1199,6 +1199,141 @@ class MeditationViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Export / Import
+    
+    struct DailyCompletionRecord: Codable {
+        let date: String
+        let boxBreathingCompleted: Bool
+        let meditationCompleted: Bool
+        let coherentBreathingCompleted: Bool
+        let bodyScanCompleted: Bool
+        let kegelExerciseCompleted: Bool
+        let gratitudeCompleted: Bool
+        let gratitudeItems: [String]
+        let affirmationCompleted: Bool
+        let affirmationItems: [String]
+        let greatDayCompleted: Bool
+        let greatDayItems: [String]
+        let highlightCompleted: Bool
+        let highlightItems: [String]
+        let learningCompleted: Bool
+        let learningItems: [String]
+        let excitementCompleted: Bool
+        let excitementItems: [String]
+        let dailyHabitsCompleted: Bool
+        let dailyHabitsItems: [DailyHabit]
+    }
+    
+    func exportAllData() throws -> Data {
+        let completions = fetchAllCompletions()
+        let formatter = ISO8601DateFormatter()
+        
+        let records: [DailyCompletionRecord] = completions.compactMap { completion in
+            guard let date = completion.date else { return nil }
+            
+            func decodeStrings(_ key: String) -> [String] {
+                guard let json = completion.value(forKey: key) as? String,
+                      let data = json.data(using: .utf8),
+                      let items = try? JSONDecoder().decode([String].self, from: data) else { return [] }
+                return items
+            }
+            
+            func decodeHabits() -> [DailyHabit] {
+                guard let json = completion.value(forKey: "dailyHabitsItems") as? String,
+                      let data = json.data(using: .utf8),
+                      let habits = try? JSONDecoder().decode([DailyHabit].self, from: data) else { return [] }
+                return habits
+            }
+            
+            return DailyCompletionRecord(
+                date: formatter.string(from: date),
+                boxBreathingCompleted: completion.boxBreathingCompleted,
+                meditationCompleted: completion.meditationCompleted,
+                coherentBreathingCompleted: completion.coherentBreathingCompleted,
+                bodyScanCompleted: completion.bodyScanCompleted,
+                kegelExerciseCompleted: completion.kegelExerciseCompleted,
+                gratitudeCompleted: completion.value(forKey: "gratitudeCompleted") as? Bool ?? false,
+                gratitudeItems: decodeStrings("gratitudeItems"),
+                affirmationCompleted: completion.value(forKey: "affirmationCompleted") as? Bool ?? false,
+                affirmationItems: decodeStrings("affirmationItems"),
+                greatDayCompleted: completion.value(forKey: "greatDayCompleted") as? Bool ?? false,
+                greatDayItems: decodeStrings("greatDayItems"),
+                highlightCompleted: completion.value(forKey: "highlightCompleted") as? Bool ?? false,
+                highlightItems: decodeStrings("highlightItems"),
+                learningCompleted: completion.value(forKey: "learningCompleted") as? Bool ?? false,
+                learningItems: decodeStrings("learningItems"),
+                excitementCompleted: completion.value(forKey: "excitementCompleted") as? Bool ?? false,
+                excitementItems: decodeStrings("excitementItems"),
+                dailyHabitsCompleted: completion.value(forKey: "dailyHabitsCompleted") as? Bool ?? false,
+                dailyHabitsItems: decodeHabits()
+            )
+        }
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try encoder.encode(records)
+    }
+    
+    /// Returns the number of records imported.
+    @discardableResult
+    func importData(from url: URL) throws -> Int {
+        let accessed = url.startAccessingSecurityScopedResource()
+        defer { if accessed { url.stopAccessingSecurityScopedResource() } }
+        
+        let data = try Data(contentsOf: url)
+        let records = try JSONDecoder().decode([DailyCompletionRecord].self, from: data)
+        
+        let context = persistenceController.container.viewContext
+        let formatter = ISO8601DateFormatter()
+        
+        for record in records {
+            guard let date = formatter.date(from: record.date) else { continue }
+            let dayStart = Calendar.current.startOfDay(for: date)
+            let dayEnd = Calendar.current.date(byAdding: .day, value: 1, to: dayStart)!
+            
+            let fetch: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+            fetch.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                          dayStart as NSDate, dayEnd as NSDate)
+            
+            let existing = (try? context.fetch(fetch))?.first
+            let entry = existing ?? DailyCompletion(context: context)
+            if existing == nil { entry.date = dayStart }
+            
+            entry.boxBreathingCompleted = record.boxBreathingCompleted
+            entry.meditationCompleted = record.meditationCompleted
+            entry.coherentBreathingCompleted = record.coherentBreathingCompleted
+            entry.bodyScanCompleted = record.bodyScanCompleted
+            entry.kegelExerciseCompleted = record.kegelExerciseCompleted
+            entry.gratitudeCompleted = record.gratitudeCompleted
+            entry.setValue(record.gratitudeCompleted, forKey: "gratitudeCompleted")
+            entry.setValue(record.affirmationCompleted, forKey: "affirmationCompleted")
+            entry.setValue(record.greatDayCompleted, forKey: "greatDayCompleted")
+            entry.setValue(record.highlightCompleted, forKey: "highlightCompleted")
+            entry.setValue(record.learningCompleted, forKey: "learningCompleted")
+            entry.setValue(record.excitementCompleted, forKey: "excitementCompleted")
+            entry.setValue(record.dailyHabitsCompleted, forKey: "dailyHabitsCompleted")
+            
+            func encode<T: Encodable>(_ value: T) -> String? {
+                guard let data = try? JSONEncoder().encode(value),
+                      let str = String(data: data, encoding: .utf8) else { return nil }
+                return str
+            }
+            
+            entry.setValue(encode(record.gratitudeItems), forKey: "gratitudeItems")
+            entry.setValue(encode(record.affirmationItems), forKey: "affirmationItems")
+            entry.setValue(encode(record.greatDayItems), forKey: "greatDayItems")
+            entry.setValue(encode(record.highlightItems), forKey: "highlightItems")
+            entry.setValue(encode(record.learningItems), forKey: "learningItems")
+            entry.setValue(encode(record.excitementItems), forKey: "excitementItems")
+            entry.setValue(encode(record.dailyHabitsItems), forKey: "dailyHabitsItems")
+        }
+        
+        try context.save()
+        loadTodayStatus()
+        calculateStreaks()
+        return records.count
+    }
+    
     // MARK: - Fetch All Completions for Calendar
     
     func fetchAllCompletions() -> [DailyCompletion] {

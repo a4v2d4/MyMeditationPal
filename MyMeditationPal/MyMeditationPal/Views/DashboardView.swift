@@ -17,6 +17,7 @@ struct DashboardView: View {
     @State private var showingCoherentBreathingDurationPicker = false
     @State private var showingMeditationDurationPicker = false
     @State private var isStreaksExpanded = false
+    @State private var showingDataManagement = false
     
     var body: some View {
         NavigationView {
@@ -39,6 +40,13 @@ struct DashboardView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { showingDataManagement = true }) {
+                    Image(systemName: "externaldrive")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(Theme.primaryOrange)
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showingCalendar = true }) {
                     Image(systemName: "calendar")
@@ -61,6 +69,9 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingDailyHabits) {
             DailyHabitsView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showingDataManagement) {
+            DataManagementView(viewModel: viewModel)
         }
         .onChange(of: showingDailyHabits) { _, newValue in
             if !newValue {
