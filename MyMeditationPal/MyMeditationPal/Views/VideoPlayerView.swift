@@ -17,8 +17,9 @@ struct CustomVideoPlayer: UIViewControllerRepresentable {
         let controller = AVPlayerViewController()
         controller.player = player
         controller.showsPlaybackControls = true
-        controller.allowsPictureInPicturePlayback = true
-        player.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+        // PiP attempts to activate on screen lock and can't render, which causes iOS
+        // to pause playback as a fallback. Disable it so background audio is uninterrupted.
+        controller.allowsPictureInPicturePlayback = false
         return controller
     }
     
@@ -203,7 +204,8 @@ struct VideoPlayerView: View {
         let playerItem = AVPlayerItem(url: mediaURL)
         let newPlayer = AVPlayer(playerItem: playerItem)
         
-        // Enable audio output for background playback (important for video)
+        // Must be set before play() so audio continues when screen locks
+        newPlayer.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         newPlayer.allowsExternalPlayback = true
         newPlayer.appliesMediaSelectionCriteriaAutomatically = true
         
@@ -332,10 +334,18 @@ struct VideoPlayerView: View {
         if isPlaying {
             player.pause()
         } else {
+            activateAudioSession()
             player.play()
         }
         isPlaying.toggle()
         updateNowPlayingPlaybackRate()
+    }
+    
+    private func activateAudioSession() {
+        // Reactivate the audio session before resuming. iOS may deactivate it
+        // when the app is suspended in the background, and play() on a deactivated
+        // session advances the playhead silently.
+        try? AVAudioSession.sharedInstance().setActive(true)
     }
     
     private func skipBackward() {
@@ -369,8 +379,9 @@ struct VideoPlayerView: View {
     private func configureAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
-            // Use .moviePlayback mode for video, .default for audio
-            let mode: AVAudioSession.Mode = exerciseType.isAudioOnly ? .default : .moviePlayback
+            // .default mode is required for both audio and video — .moviePlayback
+            // causes iOS to silence the audio track when the screen locks
+            let mode: AVAudioSession.Mode = .default
             try audioSession.setCategory(.playback, mode: mode, options: [])
             try audioSession.setActive(true)
         } catch {
@@ -384,7 +395,7 @@ struct VideoPlayerView: View {
             forName: AVAudioSession.interruptionNotification,
             object: AVAudioSession.sharedInstance(),
             queue: .main
-        ) { [weak player] notification in
+        ) { notification in
             guard let userInfo = notification.userInfo,
                   let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
                   let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
@@ -394,15 +405,21 @@ struct VideoPlayerView: View {
             if type == .began {
                 self.isPlaying = false
             } else if type == .ended {
-                if let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt {
-                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                    if options.contains(.shouldResume) {
-                        try? AVAudioSession.sharedInstance().setActive(true)
-                        player?.play()
-                        self.isPlaying = true
-                    }
-                }
+                try? AVAudioSession.sharedInstance().setActive(true)
+                self.player?.play()
+                self.isPlaying = true
+                self.updateNowPlayingPlaybackRate()
             }
+        }
+        
+        // When the app returns to the foreground, the audio session may have been
+        // deactivated. Reactivate so any subsequent play() actually produces audio.
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            try? AVAudioSession.sharedInstance().setActive(true)
         }
     }
     
@@ -413,6 +430,7 @@ struct VideoPlayerView: View {
         commandCenter.playCommand.isEnabled = true
         commandCenter.playCommand.addTarget { _ in
             guard let player = self.player else { return .commandFailed }
+            self.activateAudioSession()
             player.play()
             self.isPlaying = true
             self.updateNowPlayingPlaybackRate()
