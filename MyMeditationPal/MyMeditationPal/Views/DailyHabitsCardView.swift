@@ -10,6 +10,7 @@ import SwiftUI
 struct DailyHabitsCardView: View {
     let isCompleted: Bool
     let progress: (completed: Int, total: Int)?
+    var streak: Int = 0
     let onTap: () -> Void
     
     private var progressText: String? {
@@ -37,9 +38,13 @@ struct DailyHabitsCardView: View {
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Theme.textPrimary)
                     
-                    Text(progressText ?? "Track your daily routine")
-                        .font(.system(size: 13))
-                        .foregroundColor(Theme.textSecondary)
+                    HStack(spacing: 8) {
+                        Text(progressText ?? "Track your daily routine")
+                            .font(.system(size: 13))
+                            .foregroundColor(Theme.textSecondary)
+                        
+                        StreakBadge(streak: streak)
+                    }
                 }
                 
                 Spacer()
@@ -68,13 +73,13 @@ struct DailyHabitsCardView: View {
 
 #Preview {
     VStack {
-        DailyHabitsCardView(isCompleted: false, progress: nil, onTap: {})
+        DailyHabitsCardView(isCompleted: false, progress: nil, streak: 0, onTap: {})
             .padding()
         
-        DailyHabitsCardView(isCompleted: false, progress: (completed: 3, total: 9), onTap: {})
+        DailyHabitsCardView(isCompleted: false, progress: (completed: 3, total: 9), streak: 4, onTap: {})
             .padding()
         
-        DailyHabitsCardView(isCompleted: true, progress: (completed: 9, total: 9), onTap: {})
+        DailyHabitsCardView(isCompleted: true, progress: (completed: 9, total: 9), streak: 21, onTap: {})
             .padding()
     }
     .background(Theme.lightGray)

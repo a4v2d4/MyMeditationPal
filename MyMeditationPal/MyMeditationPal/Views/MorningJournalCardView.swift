@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MorningJournalCardView: View {
     let isCompleted: Bool
+    var streak: Int = 0
     let onTap: () -> Void
     
     var body: some View {
@@ -34,6 +35,9 @@ struct MorningJournalCardView: View {
                     Text("Gratitude, Affirmations & Intentions")
                         .font(.system(size: 13))
                         .foregroundColor(Theme.textSecondary)
+                    
+                    StreakBadge(streak: streak)
+                        .padding(.top, 2)
                 }
                 
                 Spacer()
@@ -62,10 +66,10 @@ struct MorningJournalCardView: View {
 
 #Preview {
     VStack {
-        MorningJournalCardView(isCompleted: false, onTap: {})
+        MorningJournalCardView(isCompleted: false, streak: 0, onTap: {})
             .padding()
         
-        MorningJournalCardView(isCompleted: true, onTap: {})
+        MorningJournalCardView(isCompleted: true, streak: 7, onTap: {})
             .padding()
     }
     .background(Theme.lightGray)

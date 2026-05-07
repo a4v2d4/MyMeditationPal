@@ -11,6 +11,7 @@ import AVFoundation
 struct ExerciseCardView: View {
     let exerciseType: ExerciseType
     let isCompleted: Bool
+    var streak: Int = 0
     let onTap: () -> Void
     
     var body: some View {
@@ -33,9 +34,13 @@ struct ExerciseCardView: View {
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Theme.textPrimary)
                     
-                    Text(exerciseType.duration)
-                        .font(.system(size: 13))
-                        .foregroundColor(Theme.textSecondary)
+                    HStack(spacing: 8) {
+                        Text(exerciseType.duration)
+                            .font(.system(size: 13))
+                            .foregroundColor(Theme.textSecondary)
+                        
+                        StreakBadge(streak: streak)
+                    }
                 }
                 
                 Spacer()
