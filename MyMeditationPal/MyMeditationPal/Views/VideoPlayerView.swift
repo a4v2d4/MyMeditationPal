@@ -295,16 +295,15 @@ struct VideoPlayerView: View {
             player?.seek(to: .zero)
             player?.play()
         } else {
-            // Mark as completed
             hasReachedEnd = true
-            viewModel.markCompleted(exerciseType: exerciseType)
-            
-            // Get the updated streak
-            currentStreak = getStreakForExerciseType()
-            
-            // Show congratulations view
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                showingCongratulations = true
+            // Save and recalculate streaks on a background thread so the main thread
+            // stays free to animate the transition to the congratulations screen.
+            viewModel.markCompletedInBackground(exerciseType: exerciseType) { streak in
+                // Callback is already dispatched to the main queue.
+                currentStreak = streak
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    showingCongratulations = true
+                }
             }
         }
     }

@@ -186,6 +186,95 @@ class MeditationViewModel: ObservableObject {
         }
     }
     
+    // Saves to a background context so the main thread isn't blocked at the moment
+    // an exercise ends. automaticallyMergesChangesFromParent ensures viewContext sees
+    // the save before calculateStreaks() runs on the main queue callback.
+    func markCompletedInBackground(exerciseType: ExerciseType, completion: @escaping (Int) -> Void) {
+        let today = startOfDay()
+        
+        persistenceController.container.performBackgroundTask { [weak self] backgroundContext in
+            guard let self else {
+                DispatchQueue.main.async { completion(0) }
+                return
+            }
+            
+            let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+            fetchRequest.predicate = NSPredicate(
+                format: "date >= %@ AND date < %@",
+                today as NSDate,
+                Calendar.current.date(byAdding: .day, value: 1, to: today)! as NSDate
+            )
+            
+            do {
+                let results = try backgroundContext.fetch(fetchRequest)
+                let todayCompletion: DailyCompletion
+                if let existing = results.first {
+                    todayCompletion = existing
+                } else {
+                    let new = DailyCompletion(context: backgroundContext)
+                    new.date = today
+                    new.boxBreathingCompleted = false
+                    new.meditationCompleted = false
+                    new.coherentBreathingCompleted = false
+                    new.bodyScanCompleted = false
+                    new.setValue(false, forKey: "gratitudeCompleted")
+                    new.setValue(nil, forKey: "gratitudeItems")
+                    new.setValue(false, forKey: "affirmationCompleted")
+                    new.setValue(nil, forKey: "affirmationItems")
+                    new.setValue(false, forKey: "greatDayCompleted")
+                    new.setValue(nil, forKey: "greatDayItems")
+                    todayCompletion = new
+                }
+                
+                switch exerciseType {
+                case .boxBreathing:
+                    todayCompletion.boxBreathingCompleted = true
+                case .meditation(_):
+                    todayCompletion.meditationCompleted = true
+                case .coherentBreathing(_):
+                    todayCompletion.coherentBreathingCompleted = true
+                case .bodyScan:
+                    todayCompletion.bodyScanCompleted = true
+                case .kegelExercise:
+                    todayCompletion.kegelExerciseCompleted = true
+                }
+                
+                try backgroundContext.save()
+                
+                DispatchQueue.main.async {
+                    switch exerciseType {
+                    case .boxBreathing:
+                        self.todayBoxBreathingCompleted = true
+                    case .meditation(_):
+                        self.todayMeditationCompleted = true
+                    case .coherentBreathing(_):
+                        self.todayCoherentBreathingCompleted = true
+                    case .bodyScan:
+                        self.todayBodyScanCompleted = true
+                    case .kegelExercise:
+                        self.todayKegelExerciseCompleted = true
+                    }
+                    
+                    self.calculateStreaks()
+                    
+                    let streak: Int
+                    switch exerciseType {
+                    case .boxBreathing:       streak = self.boxBreathingStreak
+                    case .meditation(_):      streak = self.meditationStreak
+                    case .coherentBreathing(_): streak = self.coherentBreathingStreak
+                    case .bodyScan:           streak = self.bodyScanStreak
+                    case .kegelExercise:      streak = self.kegelExerciseStreak
+                    }
+                    
+                    completion(streak)
+                }
+            } catch {
+                print("Error marking completion in background: \(error)")
+                DispatchQueue.main.async { completion(0) }
+            }
+        }
+    }
+    
     // MARK: - Calculate Streaks
     
     func calculateStreaks() {

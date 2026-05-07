@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @StateObject private var viewModel = MeditationViewModel()
+    @StateObject private var settings = AppSettings()
     @State private var showingVideoPlayer: ExerciseType?
     @State private var showingCalendar = false
     @State private var showingMorningJournal = false
@@ -18,6 +19,7 @@ struct DashboardView: View {
     @State private var showingMeditationDurationPicker = false
     @State private var showingDataManagement = false
     @State private var showingInsights = false
+    @State private var showingSettings = false
     
     var body: some View {
         NavigationView {
@@ -40,10 +42,17 @@ struct DashboardView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { showingDataManagement = true }) {
-                    Image(systemName: "externaldrive")
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(Theme.primaryOrange)
+                HStack(spacing: 16) {
+                    Button(action: { showingDataManagement = true }) {
+                        Image(systemName: "externaldrive")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(Theme.primaryOrange)
+                    }
+                    Button(action: { showingSettings = true }) {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(Theme.primaryOrange)
+                    }
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -76,12 +85,17 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingDailyHabits) {
             DailyHabitsView(viewModel: viewModel)
+                .environmentObject(settings)
         }
         .sheet(isPresented: $showingDataManagement) {
             DataManagementView(viewModel: viewModel)
         }
         .sheet(isPresented: $showingInsights) {
             InsightsView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showingSettings) {
+            AppSettingsView()
+                .environmentObject(settings)
         }
         .onChange(of: showingDailyHabits) { _, newValue in
             if !newValue {
@@ -144,69 +158,85 @@ struct DashboardView: View {
     
     private var topExerciseCards: some View {
         Group {
-            ExerciseCardView(
-                exerciseType: .boxBreathing,
-                isCompleted: viewModel.todayBoxBreathingCompleted,
-                streak: viewModel.boxBreathingStreak,
-                onTap: {
-                    showingVideoPlayer = .boxBreathing
-                }
-            )
-            
-            meditationCard
+            if settings.boxBreathingEnabled {
+                ExerciseCardView(
+                    exerciseType: .boxBreathing,
+                    isCompleted: viewModel.todayBoxBreathingCompleted,
+                    streak: viewModel.boxBreathingStreak,
+                    onTap: {
+                        showingVideoPlayer = .boxBreathing
+                    }
+                )
+            }
+
+            if settings.meditationEnabled {
+                meditationCard
+            }
         }
     }
     
     private var journalCards: some View {
         Group {
-            MorningJournalCardView(
-                isCompleted: viewModel.todayMorningJournalCompleted,
-                streak: viewModel.morningJournalStreak,
-                onTap: {
-                    showingMorningJournal = true
-                }
-            )
-            
-            DailyHabitsCardView(
-                isCompleted: viewModel.todayDailyHabitsCompleted,
-                progress: viewModel.getTodayDailyHabitsProgress(),
-                streak: viewModel.dailyHabitsStreak,
-                onTap: {
-                    showingDailyHabits = true
-                }
-            )
-            
-            ExerciseCardView(
-                exerciseType: .kegelExercise,
-                isCompleted: viewModel.todayKegelExerciseCompleted,
-                streak: viewModel.kegelExerciseStreak,
-                onTap: {
-                    showingVideoPlayer = .kegelExercise
-                }
-            )
-            
-            NightJournalCardView(
-                isCompleted: viewModel.todayNightJournalCompleted,
-                streak: viewModel.nightJournalStreak,
-                onTap: {
-                    showingNightJournal = true
-                }
-            )
+            if settings.morningJournalEnabled {
+                MorningJournalCardView(
+                    isCompleted: viewModel.todayMorningJournalCompleted,
+                    streak: viewModel.morningJournalStreak,
+                    onTap: {
+                        showingMorningJournal = true
+                    }
+                )
+            }
+
+            if settings.dailyHabitsEnabled {
+                DailyHabitsCardView(
+                    isCompleted: viewModel.todayDailyHabitsCompleted,
+                    progress: viewModel.getTodayDailyHabitsProgress(),
+                    streak: viewModel.dailyHabitsStreak,
+                    onTap: {
+                        showingDailyHabits = true
+                    }
+                )
+            }
+
+            if settings.kegelEnabled {
+                ExerciseCardView(
+                    exerciseType: .kegelExercise,
+                    isCompleted: viewModel.todayKegelExerciseCompleted,
+                    streak: viewModel.kegelExerciseStreak,
+                    onTap: {
+                        showingVideoPlayer = .kegelExercise
+                    }
+                )
+            }
+
+            if settings.nightJournalEnabled {
+                NightJournalCardView(
+                    isCompleted: viewModel.todayNightJournalCompleted,
+                    streak: viewModel.nightJournalStreak,
+                    onTap: {
+                        showingNightJournal = true
+                    }
+                )
+            }
         }
     }
     
     private var bottomExerciseCards: some View {
         Group {
-            coherentBreathingCard
-            
-            ExerciseCardView(
-                exerciseType: .bodyScan,
-                isCompleted: viewModel.todayBodyScanCompleted,
-                streak: viewModel.bodyScanStreak,
-                onTap: {
-                    showingVideoPlayer = .bodyScan
-                }
-            )
+            if settings.coherentBreathingEnabled {
+                coherentBreathingCard
+            }
+
+            if settings.bodyScanEnabled {
+                ExerciseCardView(
+                    exerciseType: .bodyScan,
+                    isCompleted: viewModel.todayBodyScanCompleted,
+                    streak: viewModel.bodyScanStreak,
+                    onTap: {
+                        showingVideoPlayer = .bodyScan
+                    }
+                )
+            }
         }
     }
     

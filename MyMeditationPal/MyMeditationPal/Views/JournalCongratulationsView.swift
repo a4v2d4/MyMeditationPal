@@ -47,6 +47,7 @@ struct JournalCongratulationsView: View {
     @State private var scale: CGFloat = 0.5
     @State private var opacity: Double = 0
     @State private var confettiOpacity: Double = 0
+    @State private var confettiPositions: [(x: CGFloat, y: CGFloat)] = []
     
     var body: some View {
         ZStack {
@@ -62,17 +63,17 @@ struct JournalCongratulationsView: View {
             )
             .ignoresSafeArea()
             
-            // Confetti effect
-            GeometryReader { geometry in
-                ForEach(0..<20, id: \.self) { index in
+            ZStack(alignment: .topLeading) {
+                ForEach(0..<confettiPositions.count, id: \.self) { index in
                     ConfettiPiece(color: confettiColors[index % confettiColors.count])
-                        .offset(
-                            x: CGFloat.random(in: 0...geometry.size.width),
-                            y: CGFloat.random(in: -100...geometry.size.height * 0.6)
-                        )
+                        .offset(x: confettiPositions[index].x, y: confettiPositions[index].y)
                         .opacity(confettiOpacity)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .drawingGroup()
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
             
             VStack(spacing: 32) {
                 Spacer()
@@ -156,7 +157,12 @@ struct JournalCongratulationsView: View {
             }
         }
         .onAppear {
-            // Animate entrance
+            let bounds = UIScreen.main.bounds
+            confettiPositions = (0..<20).map { _ in
+                (x: CGFloat.random(in: 0...bounds.width),
+                 y: CGFloat.random(in: -100...bounds.height * 0.6))
+            }
+            
             withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
                 scale = 1.0
             }
@@ -165,7 +171,6 @@ struct JournalCongratulationsView: View {
                 opacity = 1.0
             }
             
-            // Animate confetti with slight delay
             withAnimation(.easeOut(duration: 1.0).delay(0.2)) {
                 confettiOpacity = 1.0
             }

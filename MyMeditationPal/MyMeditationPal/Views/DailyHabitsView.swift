@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DailyHabitsView: View {
     @ObservedObject var viewModel: MeditationViewModel
+    @EnvironmentObject var settings: AppSettings
     @Environment(\.dismiss) private var dismiss
     
     @State private var habits: [DailyHabit] = DailyHabitsView.defaultHabits
@@ -28,9 +29,13 @@ struct DailyHabitsView: View {
     
     @State private var habitStreaks: [UUID: Int] = [:]
     @State private var showingCongratulations = false
-    
+
+    private var enabledHabits: [DailyHabit] {
+        habits.filter { settings.isHabitEnabled($0.id) }
+    }
+
     var allHabitsCompleted: Bool {
-        habits.allSatisfy { $0.isCompleted }
+        enabledHabits.allSatisfy { $0.isCompleted }
     }
     
     var body: some View {
@@ -50,13 +55,15 @@ struct DailyHabitsView: View {
                             // Habits list
                             VStack(spacing: 12) {
                                 ForEach($habits) { $habit in
-                                    HabitCheckboxView(
-                                        habit: $habit,
-                                        streak: habitStreaks[habit.id] ?? 0,
-                                        onToggle: {
-                                            handleHabitToggle()
-                                        }
-                                    )
+                                    if settings.isHabitEnabled(habit.id) {
+                                        HabitCheckboxView(
+                                            habit: $habit,
+                                            streak: habitStreaks[habit.id] ?? 0,
+                                            onToggle: {
+                                                handleHabitToggle()
+                                            }
+                                        )
+                                    }
                                 }
                             }
                             .padding(.horizontal, Theme.spacing)
@@ -116,8 +123,8 @@ struct DailyHabitsView: View {
     }
     
     private var progressCard: some View {
-        let completedCount = habits.filter { $0.isCompleted }.count
-        let totalCount = habits.count
+        let completedCount = enabledHabits.filter { $0.isCompleted }.count
+        let totalCount = enabledHabits.count
         let progress = Double(completedCount) / Double(totalCount)
         
         return VStack(spacing: 12) {
@@ -293,4 +300,5 @@ struct HabitCheckboxView: View {
 
 #Preview {
     DailyHabitsView(viewModel: MeditationViewModel(persistenceController: .preview))
+        .environmentObject(AppSettings())
 }
