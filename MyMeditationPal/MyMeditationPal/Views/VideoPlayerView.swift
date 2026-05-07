@@ -9,9 +9,18 @@ import SwiftUI
 import AVKit
 import MediaPlayer
 
+// Holds a weak reference to the AVPlayerViewController so VideoPlayerView can
+// detach/reattach the AVPlayer around lifecycle transitions. This is the standard
+// workaround for AVPlayerViewController auto-pausing video playback on screen lock
+// even when audiovisualBackgroundPlaybackPolicy is .continuesIfPossible.
+final class PlayerControllerHolder: ObservableObject {
+    weak var controller: AVPlayerViewController?
+}
+
 // Custom video player wrapper that supports background audio
 struct CustomVideoPlayer: UIViewControllerRepresentable {
     let player: AVPlayer
+    let holder: PlayerControllerHolder
     
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
@@ -20,11 +29,21 @@ struct CustomVideoPlayer: UIViewControllerRepresentable {
         // PiP attempts to activate on screen lock and can't render, which causes iOS
         // to pause playback as a fallback. Disable it so background audio is uninterrupted.
         controller.allowsPictureInPicturePlayback = false
+        controller.videoGravity = .resizeAspect
+        controller.view.backgroundColor = .black
+        // Provide an initial frame to avoid "Invalid frame dimension" warnings from
+        // AVPlayerViewController's internal layout before SwiftUI assigns proper bounds.
+        controller.view.frame = UIScreen.main.bounds
+        DispatchQueue.main.async {
+            holder.controller = controller
+        }
         return controller
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
-        // No updates needed
+        // Don't reassign uiViewController.player here — VideoPlayerView manages
+        // attachment manually around background/foreground transitions to keep
+        // audio playing on the lock screen.
     }
 }
 
@@ -40,6 +59,7 @@ struct VideoPlayerView: View {
     @State private var showingExitConfirmation = false
     @State private var showingCongratulations = false
     @State private var currentStreak = 0
+    @StateObject private var controllerHolder = PlayerControllerHolder()
     
     // Audio playback controls state
     @State private var isPlaying = true
@@ -134,7 +154,7 @@ struct VideoPlayerView: View {
                     }
                 } else {
                     // Video player with background audio support
-                    CustomVideoPlayer(player: player)
+                    CustomVideoPlayer(player: player, holder: controllerHolder)
                         .ignoresSafeArea()
                         .onDisappear {
                             cleanupPlayer()
@@ -412,14 +432,37 @@ struct VideoPlayerView: View {
             }
         }
         
-        // When the app returns to the foreground, the audio session may have been
-        // deactivated. Reactivate so any subsequent play() actually produces audio.
+        // When the app enters the background (screen lock or home button),
+        // AVPlayerViewController will pause video playback even with
+        // audiovisualBackgroundPlaybackPolicy set. Detach the player from the
+        // controller so the AVPlayer can keep producing audio independently.
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                guard let player = self.player, self.isPlaying else { return }
+                if player.rate == 0 {
+                    self.controllerHolder.controller?.player = nil
+                    try? AVAudioSession.sharedInstance().setActive(true)
+                    player.play()
+                }
+            }
+        }
+        
+        // When the app returns to the foreground, reattach the player to the
+        // controller so the video resumes rendering, and reactivate the audio
+        // session in case it was deactivated while suspended.
         NotificationCenter.default.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
             queue: .main
         ) { _ in
             try? AVAudioSession.sharedInstance().setActive(true)
+            if let vc = self.controllerHolder.controller, let player = self.player, vc.player == nil {
+                vc.player = player
+            }
         }
     }
     

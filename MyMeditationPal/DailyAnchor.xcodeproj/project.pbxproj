@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		93AADFB72FAD376200BB9895 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93AADFB52FAD376200BB9895 /* AVFAudio.framework */; };
+		93AADFB82FAD376200BB9895 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93AADFB62FAD376200BB9895 /* AVFoundation.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		930DBCD22F1D8B8F00555EA7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,9 @@
 		930DBCBC2F1D8B8D00555EA7 /* DailyAnchor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DailyAnchor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		930DBCD12F1D8B8F00555EA7 /* DailyAnchorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyAnchorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		930DBCDB2F1D8B8F00555EA7 /* DailyAnchorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyAnchorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AADFB52FAD376200BB9895 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = System/Library/Frameworks/AVFAudio.framework; sourceTree = SDKROOT; };
+		93AADFB62FAD376200BB9895 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		93AADFB92FAD376E00BB9895 /* DailyAnchor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "DailyAnchor-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +60,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93AADFB82FAD376200BB9895 /* AVFoundation.framework in Frameworks */,
+				93AADFB72FAD376200BB9895 /* AVFAudio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,9 +85,11 @@
 		930DBCB32F1D8B8D00555EA7 = {
 			isa = PBXGroup;
 			children = (
+				93AADFB92FAD376E00BB9895 /* DailyAnchor-Info.plist */,
 				930DBCBE2F1D8B8D00555EA7 /* MyMeditationPal */,
 				930DBCD42F1D8B8F00555EA7 /* MyMeditationPalTests */,
 				930DBCDE2F1D8B8F00555EA7 /* MyMeditationPalUITests */,
+				93AADFB42FAD376200BB9895 /* Frameworks */,
 				930DBCBD2F1D8B8D00555EA7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +102,15 @@
 				930DBCDB2F1D8B8F00555EA7 /* DailyAnchorUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		93AADFB42FAD376200BB9895 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				93AADFB52FAD376200BB9895 /* AVFAudio.framework */,
+				93AADFB62FAD376200BB9895 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -399,6 +420,7 @@
 				DEVELOPMENT_TEAM = T7J4DHX4TU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "DailyAnchor-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIBackgroundModes = audio;
@@ -429,6 +451,7 @@
 				DEVELOPMENT_TEAM = T7J4DHX4TU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "DailyAnchor-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIBackgroundModes = audio;
