@@ -1109,13 +1109,9 @@ class MeditationViewModel: ObservableObject {
         }
     }
     
-    func calculateAllIndividualHabitStreaks() -> [UUID: Int] {
-        guard let currentHabits = loadTodayDailyHabits() else {
-            return [:]
-        }
-        
+    func calculateAllIndividualHabitStreaks(for habits: [DailyHabit]) -> [UUID: Int] {
         var streaks: [UUID: Int] = [:]
-        for habit in currentHabits {
+        for habit in habits {
             streaks[habit.id] = calculateIndividualHabitStreak(habitId: habit.id)
         }
         return streaks

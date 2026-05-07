@@ -11,16 +11,19 @@ struct DailyHabitsView: View {
     @ObservedObject var viewModel: MeditationViewModel
     @Environment(\.dismiss) private var dismiss
     
-    @State private var habits: [DailyHabit] = [
-        DailyHabit(name: "Morning electrolytes", isCompleted: false),
-        DailyHabit(name: "Brush Teeth", isCompleted: false),
-        DailyHabit(name: "Cold Shower", isCompleted: false),
-        DailyHabit(name: "Direct Sunlight Walk", isCompleted: false),
-        DailyHabit(name: "Non-fiction book/audiobook for 15+ min", isCompleted: false),
-        DailyHabit(name: "30+ min. exercise (lifting, running, etc.)", isCompleted: false),
-        DailyHabit(name: "Relax Psoas w/ feet elevated for 15+ min", isCompleted: false),
-        DailyHabit(name: "Creatine Supplement", isCompleted: false),
-        DailyHabit(name: "Magnesium Supplement", isCompleted: false)
+    @State private var habits: [DailyHabit] = DailyHabitsView.defaultHabits
+    
+    // Fixed UUIDs ensure streak tracking works correctly across days.
+    static let defaultHabits: [DailyHabit] = [
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000001")!, name: "Morning electrolytes", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000002")!, name: "Brush Teeth", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000003")!, name: "Cold Shower", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000004")!, name: "Direct Sunlight Walk", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000005")!, name: "Non-fiction book/audiobook for 15+ min", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000006")!, name: "30+ min. exercise (lifting, running, etc.)", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000007")!, name: "Relax Psoas w/ feet elevated for 15+ min", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000008")!, name: "Creatine Supplement", isCompleted: false),
+        DailyHabit(id: UUID(uuidString: "A1B2C3D4-0001-0000-0000-000000000009")!, name: "Magnesium Supplement", isCompleted: false)
     ]
     
     @State private var habitStreaks: [UUID: Int] = [:]
@@ -183,7 +186,7 @@ struct DailyHabitsView: View {
     }
     
     private func loadStreaks() {
-        habitStreaks = viewModel.calculateAllIndividualHabitStreaks()
+        habitStreaks = viewModel.calculateAllIndividualHabitStreaks(for: habits)
     }
     
     private func saveHabits() {
