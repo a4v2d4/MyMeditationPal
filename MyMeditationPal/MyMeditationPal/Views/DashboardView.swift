@@ -18,6 +18,7 @@ struct DashboardView: View {
     @State private var showingMeditationDurationPicker = false
     @State private var isStreaksExpanded = false
     @State private var showingDataManagement = false
+    @State private var showingInsights = false
     
     var body: some View {
         NavigationView {
@@ -48,10 +49,18 @@ struct DashboardView: View {
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showingCalendar = true }) {
-                    Image(systemName: "calendar")
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(Theme.primaryOrange)
+                HStack(spacing: 16) {
+                    Button(action: { showingInsights = true }) {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(Theme.primaryOrange)
+                    }
+                    
+                    Button(action: { showingCalendar = true }) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(Theme.primaryOrange)
+                    }
                 }
             }
         }
@@ -72,6 +81,9 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingDataManagement) {
             DataManagementView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showingInsights) {
+            InsightsView(viewModel: viewModel)
         }
         .onChange(of: showingDailyHabits) { _, newValue in
             if !newValue {
