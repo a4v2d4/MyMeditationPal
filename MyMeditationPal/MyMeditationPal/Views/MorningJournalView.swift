@@ -30,23 +30,7 @@ struct MorningJournalView: View {
                 Theme.lightGray.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Header
-                    VStack(spacing: 12) {
-                        Text("Morning Journal")
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(Theme.textPrimary)
-                        
-                        // Progress indicator
-                        HStack(spacing: 16) {
-                            ProgressCircle(isCompleted: gratitudeCompleted, color: Theme.primaryOrange, label: "1")
-                            ProgressCircle(isCompleted: affirmationCompleted, color: Color(red: 0.3, green: 0.7, blue: 0.6), label: "2")
-                            ProgressCircle(isCompleted: greatDayCompleted, color: Color(red: 0.95, green: 0.75, blue: 0.3), label: "3")
-                        }
-                    }
-                    .padding(.top, Theme.largePadding)
-                    .padding(.bottom, Theme.spacing)
-                    
-                    // Section picker
+                    // Section picker (pinned)
                     Picker("Section", selection: $selectedSection) {
                         ForEach(MorningSection.allCases, id: \.self) { section in
                             Text(section.rawValue).tag(section)
@@ -54,11 +38,26 @@ struct MorningJournalView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .padding(.horizontal, Theme.spacing)
+                    .padding(.top, Theme.largePadding)
                     .padding(.bottom, Theme.spacing)
                     
-                    // Content
+                    // Content (header scrolls with content)
                     ScrollView {
                         VStack(spacing: Theme.largePadding) {
+                            // Header (scrollable so it moves out of the way when typing)
+                            VStack(spacing: 12) {
+                                Text("Morning Journal")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Theme.textPrimary)
+                                
+                                HStack(spacing: 16) {
+                                    ProgressCircle(isCompleted: gratitudeCompleted, color: Theme.primaryOrange, label: "1")
+                                    ProgressCircle(isCompleted: affirmationCompleted, color: Color(red: 0.3, green: 0.7, blue: 0.6), label: "2")
+                                    ProgressCircle(isCompleted: greatDayCompleted, color: Color(red: 0.95, green: 0.75, blue: 0.3), label: "3")
+                                }
+                            }
+                            .padding(.top, Theme.spacing)
+                            
                             switch selectedSection {
                             case .gratitude:
                                 gratitudeSection
@@ -68,9 +67,10 @@ struct MorningJournalView: View {
                                 greatDaySection
                             }
                             
-                            Spacer(minLength: 40)
+                            Spacer(minLength: 120)
                         }
                     }
+                    .scrollDismissesKeyboard(.interactively)
                     
                     // Bottom save button
                     VStack(spacing: 12) {
@@ -158,7 +158,8 @@ struct MorningJournalView: View {
                 ForEach(0..<gratitudeItems.count, id: \.self) { index in
                     GratitudeTextField(
                         number: index + 1,
-                        text: $gratitudeItems[index]
+                        text: $gratitudeItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }
@@ -217,7 +218,8 @@ struct MorningJournalView: View {
                 ForEach(0..<affirmationItems.count, id: \.self) { index in
                     AffirmationTextField(
                         number: index + 1,
-                        text: $affirmationItems[index]
+                        text: $affirmationItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }
@@ -280,7 +282,8 @@ struct MorningJournalView: View {
                 ForEach(0..<greatDayItems.count, id: \.self) { index in
                     GreatDayTextField(
                         number: index + 1,
-                        text: $greatDayItems[index]
+                        text: $greatDayItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }

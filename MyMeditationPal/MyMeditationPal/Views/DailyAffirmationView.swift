@@ -40,7 +40,8 @@ struct DailyAffirmationView: View {
                             ForEach(0..<affirmationItems.count, id: \.self) { index in
                                 AffirmationTextField(
                                     number: index + 1,
-                                    text: $affirmationItems[index]
+                                    text: $affirmationItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -103,6 +104,7 @@ struct DailyAffirmationView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -158,6 +160,7 @@ struct DailyAffirmationView: View {
 struct AffirmationTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -178,8 +181,22 @@ struct AffirmationTextField: View {
                         .stroke(isFocused ? Color(red: 0.3, green: 0.7, blue: 0.6) : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 

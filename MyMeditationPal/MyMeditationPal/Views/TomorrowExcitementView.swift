@@ -44,7 +44,8 @@ struct TomorrowExcitementView: View {
                             ForEach(0..<excitementItems.count, id: \.self) { index in
                                 ExcitementTextField(
                                     number: index + 1,
-                                    text: $excitementItems[index]
+                                    text: $excitementItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -107,6 +108,7 @@ struct TomorrowExcitementView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -162,6 +164,7 @@ struct TomorrowExcitementView: View {
 struct ExcitementTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -182,8 +185,22 @@ struct ExcitementTextField: View {
                         .stroke(isFocused ? Color(red: 0.4, green: 0.75, blue: 0.95) : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 

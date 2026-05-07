@@ -40,7 +40,8 @@ struct LearningsView: View {
                             ForEach(0..<learningItems.count, id: \.self) { index in
                                 LearningTextField(
                                     number: index + 1,
-                                    text: $learningItems[index]
+                                    text: $learningItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -103,6 +104,7 @@ struct LearningsView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -158,6 +160,7 @@ struct LearningsView: View {
 struct LearningTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -178,8 +181,22 @@ struct LearningTextField: View {
                         .stroke(isFocused ? Color(red: 0.5, green: 0.4, blue: 0.7) : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 

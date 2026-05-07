@@ -963,7 +963,15 @@ class MeditationViewModel: ObservableObject {
         do {
             let completions = try context.fetch(fetchRequest)
             var streak = 0
-            var currentDate = startOfDay()
+            let today = startOfDay()
+            
+            // If today isn't completed yet, show the streak earned through yesterday
+            // so the running streak remains visible before the day's habits are done.
+            let todayCompleted = completions
+                .first(where: { isSameDay($0.date ?? Date.distantPast, today) })
+                .flatMap { $0.value(forKey: "dailyHabitsCompleted") as? Bool } ?? false
+            
+            var currentDate = todayCompleted ? today : Calendar.current.date(byAdding: .day, value: -1, to: today)!
             
             for completion in completions {
                 guard let completionDate = completion.date else { continue }
@@ -1203,6 +1211,24 @@ class MeditationViewModel: ObservableObject {
         } catch {
             print("Error fetching completions: \(error)")
             return []
+        }
+    }
+    
+    func fetchCompletion(for date: Date) -> DailyCompletion? {
+        let context = persistenceController.container.viewContext
+        let start = Calendar.current.startOfDay(for: date)
+        let end = Calendar.current.date(byAdding: .day, value: 1, to: start)!
+        
+        let fetchRequest: NSFetchRequest<DailyCompletion> = DailyCompletion.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                            start as NSDate,
+                                            end as NSDate)
+        
+        do {
+            return try context.fetch(fetchRequest).first
+        } catch {
+            print("Error fetching completion for date: \(error)")
+            return nil
         }
     }
 }

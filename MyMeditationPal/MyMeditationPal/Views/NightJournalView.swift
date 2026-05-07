@@ -30,23 +30,7 @@ struct NightJournalView: View {
                 Theme.lightGray.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Header
-                    VStack(spacing: 12) {
-                        Text("Night Journal")
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(Theme.textPrimary)
-                        
-                        // Progress indicator
-                        HStack(spacing: 16) {
-                            ProgressCircle(isCompleted: highlightsCompleted, color: Color(red: 1.0, green: 0.6, blue: 0.4), label: "1")
-                            ProgressCircle(isCompleted: learningsCompleted, color: Color(red: 0.5, green: 0.4, blue: 0.7), label: "2")
-                            ProgressCircle(isCompleted: excitementCompleted, color: Color(red: 0.4, green: 0.75, blue: 0.95), label: "3")
-                        }
-                    }
-                    .padding(.top, Theme.largePadding)
-                    .padding(.bottom, Theme.spacing)
-                    
-                    // Section picker
+                    // Section picker (pinned)
                     Picker("Section", selection: $selectedSection) {
                         ForEach(NightSection.allCases, id: \.self) { section in
                             Text(section.rawValue).tag(section)
@@ -54,11 +38,26 @@ struct NightJournalView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .padding(.horizontal, Theme.spacing)
+                    .padding(.top, Theme.largePadding)
                     .padding(.bottom, Theme.spacing)
                     
-                    // Content
+                    // Content (header scrolls with content)
                     ScrollView {
                         VStack(spacing: Theme.largePadding) {
+                            // Header (scrollable so it moves out of the way when typing)
+                            VStack(spacing: 12) {
+                                Text("Night Journal")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Theme.textPrimary)
+                                
+                                HStack(spacing: 16) {
+                                    ProgressCircle(isCompleted: highlightsCompleted, color: Color(red: 1.0, green: 0.6, blue: 0.4), label: "1")
+                                    ProgressCircle(isCompleted: learningsCompleted, color: Color(red: 0.5, green: 0.4, blue: 0.7), label: "2")
+                                    ProgressCircle(isCompleted: excitementCompleted, color: Color(red: 0.4, green: 0.75, blue: 0.95), label: "3")
+                                }
+                            }
+                            .padding(.top, Theme.spacing)
+                            
                             switch selectedSection {
                             case .highlights:
                                 highlightsSection
@@ -68,9 +67,10 @@ struct NightJournalView: View {
                                 excitementSection
                             }
                             
-                            Spacer(minLength: 40)
+                            Spacer(minLength: 120)
                         }
                     }
+                    .scrollDismissesKeyboard(.interactively)
                     
                     // Bottom save button
                     VStack(spacing: 12) {
@@ -157,7 +157,8 @@ struct NightJournalView: View {
                 ForEach(0..<highlightItems.count, id: \.self) { index in
                     HighlightTextField(
                         number: index + 1,
-                        text: $highlightItems[index]
+                        text: $highlightItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }
@@ -216,7 +217,8 @@ struct NightJournalView: View {
                 ForEach(0..<learningItems.count, id: \.self) { index in
                     LearningTextField(
                         number: index + 1,
-                        text: $learningItems[index]
+                        text: $learningItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }
@@ -279,7 +281,8 @@ struct NightJournalView: View {
                 ForEach(0..<excitementItems.count, id: \.self) { index in
                     ExcitementTextField(
                         number: index + 1,
-                        text: $excitementItems[index]
+                        text: $excitementItems[index],
+                        autoFocus: index == 0
                     )
                 }
             }

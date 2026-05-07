@@ -45,7 +45,8 @@ struct GratitudeJournalView: View {
                             ForEach(0..<gratitudeItems.count, id: \.self) { index in
                                 GratitudeTextField(
                                     number: index + 1,
-                                    text: $gratitudeItems[index]
+                                    text: $gratitudeItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -108,6 +109,7 @@ struct GratitudeJournalView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -163,6 +165,7 @@ struct GratitudeJournalView: View {
 struct GratitudeTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -183,8 +186,22 @@ struct GratitudeTextField: View {
                         .stroke(isFocused ? Theme.primaryOrange : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 

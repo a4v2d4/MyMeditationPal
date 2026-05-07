@@ -44,7 +44,8 @@ struct GreatDayView: View {
                             ForEach(0..<greatDayItems.count, id: \.self) { index in
                                 GreatDayTextField(
                                     number: index + 1,
-                                    text: $greatDayItems[index]
+                                    text: $greatDayItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -107,6 +108,7 @@ struct GreatDayView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -162,6 +164,7 @@ struct GreatDayView: View {
 struct GreatDayTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -182,8 +185,22 @@ struct GreatDayTextField: View {
                         .stroke(isFocused ? Color(red: 0.95, green: 0.75, blue: 0.3) : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 

@@ -40,7 +40,8 @@ struct HighlightsView: View {
                             ForEach(0..<highlightItems.count, id: \.self) { index in
                                 HighlightTextField(
                                     number: index + 1,
-                                    text: $highlightItems[index]
+                                    text: $highlightItems[index],
+                                    autoFocus: index == 0
                                 )
                             }
                         }
@@ -103,6 +104,7 @@ struct HighlightsView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -158,6 +160,7 @@ struct HighlightsView: View {
 struct HighlightTextField: View {
     let number: Int
     @Binding var text: String
+    var autoFocus: Bool = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -178,8 +181,22 @@ struct HighlightTextField: View {
                         .stroke(isFocused ? Color(red: 1.0, green: 0.6, blue: 0.4) : Color.clear, lineWidth: 2)
                 )
                 .focused($isFocused)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { isFocused = false }
+                            .fontWeight(.semibold)
+                    }
+                }
         }
         .padding(.vertical, 8)
+        .onAppear {
+            if autoFocus {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
+                }
+            }
+        }
     }
 }
 
