@@ -18,7 +18,7 @@ struct CustomVideoPlayer: UIViewControllerRepresentable {
         controller.player = player
         controller.showsPlaybackControls = true
         controller.allowsPictureInPicturePlayback = true
-        controller.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+        player.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         return controller
     }
     
